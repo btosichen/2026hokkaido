@@ -210,12 +210,13 @@
 
     <script>
         const hokkaidoPlaces = [
+            // 原有資料保留 (部分重複的會被新行程使用)
             { id: 1, name: "大通公園 (電視塔)", type: "spot", city: "札幌", lat: 43.0611, lng: 141.3564, note: "札幌的地標，必拍電視塔，冬天有雪祭。", icon: "🗼" },
             { id: 2, name: "狸小路商店街", type: "shopping", city: "札幌", lat: 43.0567, lng: 141.3542, note: "超長商店街，藥妝店、唐吉訶德都在這。", icon: "🛍️" },
             { id: 3, name: "Seicomart (大通店)", type: "store", city: "札幌", lat: 43.0590, lng: 141.3510, note: "北海道神級超商！必吃炸雞與哈密瓜冰。", icon: "🏪" },
             { id: 4, name: "小樽運河", type: "spot", city: "小樽", lat: 43.1976, lng: 141.0028, note: "浪漫的運河夜景，旁邊有很多玻璃館。", icon: "🛶" },
             { id: 5, name: "LeTAO 本店", type: "food", city: "小樽", lat: 43.1912, lng: 141.0065, note: "雙層乳酪蛋糕是極品，一定要試吃。", icon: "🍰" },
-            { id: 6, name: "函館山夜景", type: "spot", city: "函館", lat: 41.7600, lng: 140.7143, note: "世界三大夜景之一，纜車上山很壯觀。", icon: "🌃" },
+            { id: 6, name: "函館山觀景台", type: "spot", city: "函館", lat: 41.7600, lng: 140.7143, note: "世界三大夜景之一，纜車上山很壯觀。", icon: "🌃" },
             { id: 7, name: "幸運小丑漢堡", type: "food", city: "函館", lat: 41.7656, lng: 140.7176, note: "只有函館才有的漢堡店，份量超大。", icon: "🍔" },
             { id: 8, name: "旭山動物園", type: "spot", city: "旭川", lat: 43.7667, lng: 142.4800, note: "冬天可以看到企鵝散步！", icon: "🐧" },
             { id: 9, name: "成吉思汗烤肉", type: "food", city: "札幌", lat: 43.0551, lng: 141.3514, note: "北海道必吃羊肉燒烤，配啤酒絕讚。", icon: "🥩" },
@@ -228,15 +229,65 @@
             { id: 16, name: "根室花丸 (JR塔店)", type: "food", city: "札幌", lat: 43.0686, lng: 141.3508, note: "CP值超高的迴轉壽司，就在車站樓上。", icon: "🍣" },
             { id: 17, name: "Toriton 迴轉壽司", type: "food", city: "札幌", lat: 43.0585, lng: 141.3835, note: "食材新鮮大塊，本地人最推薦的壽司店。", icon: "🍣" },
             { id: 18, name: "函太郎迴轉壽司", type: "food", city: "函館", lat: 41.7828, lng: 140.7554, note: "函館起家的人氣壽司，靠近海邊風景好。", icon: "🍣" },
-            { id: 19, name: "Suage+ 湯咖哩", type: "food", city: "札幌", lat: 43.0555, lng: 141.3533, note: "知床雞肉串湯咖哩，札幌必吃美食。", icon: "🍛" }
+            { id: 19, name: "Suage+ 湯咖哩", type: "food", city: "札幌", lat: 43.0555, lng: 141.3533, note: "知床雞肉串湯咖哩，札幌必吃美食。", icon: "🍛" },
+            
+            // --- 新增行程景點 ---
+            // Day 1
+            { id: 20, name: "百年女子修道院", type: "spot", city: "函館", lat: 41.8153, lng: 140.7914, note: "日本第一座女子修道院，必吃門口霜淇淋！", icon: "⛪" },
+            { id: 21, name: "大沼國定公園", type: "spot", city: "七飯", lat: 41.9830, lng: 140.6698, note: "新日本三景之一，湖光山色非常美麗。", icon: "🏞️" },
+            { id: 22, name: "洞爺湖展望台", type: "spot", city: "洞爺湖", lat: 42.6146, lng: 140.8357, note: "眺望洞爺湖全景與中島的最佳位置。", icon: "🌋" },
+            { id: 23, name: "登別溫泉 Hotel", type: "spot", city: "登別", lat: 42.4144, lng: 141.1444, note: "北海道著名的溫泉鄉，享受地獄谷溫泉。", icon: "♨️" },
+            
+            // Day 2 (補足小樽景點)
+            { id: 24, name: "北一硝子館", type: "shopping", city: "小樽", lat: 43.1925, lng: 141.0080, note: "著名的玻璃工藝館，煤油燈咖啡廳氣氛佳。", icon: "🥃" },
+            { id: 25, name: "小樽音樂盒堂 (蒸氣鐘)", type: "spot", city: "小樽", lat: 43.1906, lng: 141.0076, note: "門口有世界最大的蒸氣鐘，整點會報時。", icon: "🎼" },
+
+            // Day 4
+            { id: 26, name: "三井 OUTLET PARK", type: "shopping", city: "北廣島", lat: 42.9698, lng: 141.4627, note: "札幌近郊最大暢貨中心，品牌非常多。", icon: "🛍️" },
+            { id: 27, name: "金森紅磚倉庫", type: "spot", city: "函館", lat: 41.7670, lng: 140.7165, note: "港邊的紅磚倉庫群，有很多特色商店。", icon: "🧱" },
+            { id: 28, name: "函館明治館", type: "spot", city: "函館", lat: 41.7667, lng: 140.7180, note: "舊郵局改建，爬滿常春藤的紅磚建築。", icon: "🏛️" },
+            { id: 29, name: "函館西波止場", type: "shopping", city: "函館", lat: 41.7665, lng: 140.7155, note: "靠近海邊的複合商場，海鮮伴手禮豐富。", icon: "⚓" },
+
+            // Day 5
+            { id: 30, name: "函館傳統朝市", type: "food", city: "函館", lat: 41.7725, lng: 140.7259, note: "必吃海鮮丼飯、釣烏賊體驗。", icon: "🦀" },
         ];
 
         const itinerary = [
-            { day: "Day 1", title: "抵達札幌", desc: "市區觀光與採買補給", color: "bg-blue-100", spots: [1, 2, 9] },
-            { day: "Day 2", title: "小樽浪漫遊", desc: "運河散策與甜點之旅", color: "bg-pink-100", spots: [4, 5] },
-            { day: "Day 3", title: "札幌名勝巡禮", desc: "神宮參拜與觀光工廠一日遊", color: "bg-green-100", spots: [11, 12, 13, 2] },
-            { day: "Day 4", title: "移動至函館", desc: "欣賞百萬夜景", color: "bg-purple-100", spots: [6, 7] },
-            { day: "Day 5", title: "最後衝刺", desc: "機場大採購", color: "bg-orange-100", spots: [10] }
+            { 
+                day: "Day 1", 
+                title: "道南自然風光", 
+                desc: "修道院參訪、大沼公園與洞爺湖美景，夜宿登別", 
+                color: "bg-blue-100", 
+                spots: [20, 21, 22, 23] // 修道院 -> 大沼 -> 洞爺湖 -> 登別
+            },
+            { 
+                day: "Day 2", 
+                title: "小樽浪漫遊", 
+                desc: "運河、硝子館與音樂盒堂的歐風散策", 
+                color: "bg-pink-100", 
+                spots: [4, 24, 25] // 運河 -> 北一硝子 -> 音樂盒堂(蒸氣鐘)
+            },
+            { 
+                day: "Day 3", 
+                title: "札幌名勝巡禮", 
+                desc: "神宮參拜與觀光工廠一日遊", 
+                color: "bg-green-100", 
+                spots: [11, 12, 13, 2] // 神宮 -> 札幌工廠 -> 白色戀人 -> 狸小路 (維持原案)
+            },
+            { 
+                day: "Day 4", 
+                title: "購物與百萬夜景", 
+                desc: "Outlet 購物後前往函館賞夜景", 
+                color: "bg-purple-100", 
+                spots: [26, 27, 28, 29, 6] // 三井Outlet -> 金森倉庫 -> 明治館 -> 西波止場 -> 函館山
+            },
+            { 
+                day: "Day 5", 
+                title: "海鮮美食饗宴", 
+                desc: "函館朝市體驗與返程", 
+                color: "bg-orange-100", 
+                spots: [30, 10] // 朝市 -> 機場(保留機場作為終點)
+            }
         ];
 
         let map;
