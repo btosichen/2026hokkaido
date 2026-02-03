@@ -60,10 +60,10 @@
     <!-- 頂部標題列 -->
     <header class="bg-blue-500 text-white p-4 shadow-md flex-none z-20">
         <div class="flex justify-between items-center">
-            <h1 class="text-xl font-bold flex items-center gap-2">
+            <h1 class="text-2xl font-bold flex items-center gap-2">
                 ❄️ 北海道旅遊趣
             </h1>
-            <button onclick="toggleMockLocation()" class="text-xs bg-white/20 px-2 py-1 rounded hover:bg-white/30 transition">
+            <button onclick="toggleMockLocation()" class="text-sm bg-white/20 px-2 py-1 rounded hover:bg-white/30 transition">
                 📍 模擬定位
             </button>
         </div>
@@ -76,18 +76,18 @@
         <div id="view-home" class="p-4 space-y-6 fade-in pb-24">
             <!-- 歡迎卡片 -->
             <div class="bg-gradient-to-r from-blue-400 to-cyan-300 rounded-2xl p-6 text-white shadow-lg">
-                <p class="text-sm opacity-90">目前位置</p>
-                <h2 id="current-location-text" class="text-2xl font-bold mt-1">🇯🇵 尚未定位</h2>
+                <p class="text-base opacity-90">目前位置</p>
+                <h2 id="current-location-text" class="text-3xl font-bold mt-1">🇯🇵 尚未定位</h2>
                 <div class="mt-4 flex gap-3">
-                    <button onclick="switchTab('map', 'food')" class="flex-1 bg-white/20 backdrop-blur-sm py-2 rounded-lg text-sm font-medium hover:bg-white/30 transition">🍜 找美食</button>
-                    <button onclick="switchTab('map', 'store')" class="flex-1 bg-white/20 backdrop-blur-sm py-2 rounded-lg text-sm font-medium hover:bg-white/30 transition">🏪 找超商</button>
-                    <button onclick="switchTab('map', 'shopping')" class="flex-1 bg-white/20 backdrop-blur-sm py-2 rounded-lg text-sm font-medium hover:bg-white/30 transition">🛍️ 伴手禮</button>
+                    <button onclick="switchTab('map', 'food')" class="flex-1 bg-white/20 backdrop-blur-sm py-2 rounded-lg text-base font-medium hover:bg-white/30 transition">🍜 找美食</button>
+                    <button onclick="switchTab('map', 'store')" class="flex-1 bg-white/20 backdrop-blur-sm py-2 rounded-lg text-base font-medium hover:bg-white/30 transition">🏪 找超商</button>
+                    <button onclick="switchTab('map', 'shopping')" class="flex-1 bg-white/20 backdrop-blur-sm py-2 rounded-lg text-base font-medium hover:bg-white/30 transition">🛍️ 伴手禮</button>
                 </div>
             </div>
 
             <!-- 行程時間軸 -->
             <div>
-                <h3 class="font-bold text-lg mb-3 text-gray-700">🗓️ 5 天行程總覽</h3>
+                <h3 class="font-bold text-xl mb-3 text-gray-700">🗓️ 5 天行程總覽</h3>
                 <div class="space-y-3" id="itinerary-list">
                     <!-- JS 會動態產生行程卡片 -->
                 </div>
@@ -99,11 +99,11 @@
             <!-- 篩選按鈕 (懸浮) -->
             <div class="absolute top-2 left-0 right-0 z-[1000] px-2">
                 <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-                    <button onclick="filterMap('all')" class="map-filter px-4 py-1.5 bg-white shadow-md rounded-full text-sm whitespace-nowrap border border-gray-200 active-filter font-bold text-blue-600 ring-2 ring-blue-500">全部</button>
-                    <button onclick="filterMap('food')" class="map-filter px-4 py-1.5 bg-white shadow-md rounded-full text-sm whitespace-nowrap border border-gray-200">🍜 美食</button>
-                    <button onclick="filterMap('spot')" class="map-filter px-4 py-1.5 bg-white shadow-md rounded-full text-sm whitespace-nowrap border border-gray-200">📸 景點</button>
-                    <button onclick="filterMap('shopping')" class="map-filter px-4 py-1.5 bg-white shadow-md rounded-full text-sm whitespace-nowrap border border-gray-200">🛍️ 購物</button>
-                    <button onclick="filterMap('store')" class="map-filter px-4 py-1.5 bg-white shadow-md rounded-full text-sm whitespace-nowrap border border-gray-200">🏪 超商</button>
+                    <button onclick="filterMap('all')" class="map-filter px-4 py-2 bg-white shadow-md rounded-full text-base whitespace-nowrap border border-gray-200 active-filter font-bold text-blue-600 ring-2 ring-blue-500">全部</button>
+                    <button onclick="filterMap('food')" class="map-filter px-4 py-2 bg-white shadow-md rounded-full text-base whitespace-nowrap border border-gray-200">🍜 美食</button>
+                    <button onclick="filterMap('spot')" class="map-filter px-4 py-2 bg-white shadow-md rounded-full text-base whitespace-nowrap border border-gray-200">📸 景點</button>
+                    <button onclick="filterMap('shopping')" class="map-filter px-4 py-2 bg-white shadow-md rounded-full text-base whitespace-nowrap border border-gray-200">🛍️ 購物</button>
+                    <button onclick="filterMap('store')" class="map-filter px-4 py-2 bg-white shadow-md rounded-full text-base whitespace-nowrap border border-gray-200">🏪 超商</button>
                 </div>
             </div>
             
@@ -114,14 +114,14 @@
             <div id="map-card" class="absolute bottom-4 left-4 right-4 bg-white p-4 rounded-xl shadow-2xl z-[1000] hidden transform transition-all duration-300 translate-y-0">
                 <div class="flex justify-between items-start">
                     <div>
-                        <span id="card-type" class="text-xs font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-600">類型</span>
-                        <h3 id="card-title" class="text-lg font-bold mt-1 text-gray-800">地點名稱</h3>
-                        <p id="card-desc" class="text-sm text-gray-500 mt-1 line-clamp-2">描述</p>
+                        <span id="card-type" class="text-sm font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-600">類型</span>
+                        <h3 id="card-title" class="text-xl font-bold mt-1 text-gray-800">地點名稱</h3>
+                        <p id="card-desc" class="text-base text-gray-500 mt-1 line-clamp-2">描述</p>
                     </div>
-                    <button onclick="closeMapCard()" class="text-gray-400 hover:text-gray-600">✕</button>
+                    <button onclick="closeMapCard()" class="text-gray-400 hover:text-gray-600 text-xl">✕</button>
                 </div>
                 <div class="mt-4 flex gap-2">
-                    <a id="card-google-btn" href="#" target="_blank" class="flex-1 bg-blue-600 text-white text-center py-2 rounded-lg text-sm font-bold shadow hover:bg-blue-700 transition">
+                    <a id="card-google-btn" href="#" target="_blank" class="flex-1 bg-blue-600 text-white text-center py-2 rounded-lg text-base font-bold shadow hover:bg-blue-700 transition">
                         🗺️ Google 導航
                     </a>
                     <button id="card-fav-btn" class="px-3 py-2 border border-gray-300 rounded-lg text-gray-500 hover:bg-gray-50">
@@ -133,31 +133,39 @@
 
         <!-- 3️⃣ 探索/分類視圖 (Explore View) -->
         <div id="view-explore" class="hidden p-4 space-y-4 fade-in pb-24">
-            <h2 class="text-xl font-bold text-gray-800">🔍 探索類別</h2>
+            <h2 class="text-2xl font-bold text-gray-800">🔍 探索類別</h2>
             
             <!-- 搜尋框 -->
             <div class="relative">
-                <input type="text" id="search-input" placeholder="搜尋拉麵、伴手禮..." class="w-full p-3 pl-10 rounded-xl border-none shadow-sm bg-white focus:ring-2 focus:ring-blue-400 outline-none">
-                <span class="absolute left-3 top-3 text-gray-400">🔍</span>
+                <input type="text" id="search-input" placeholder="搜尋拉麵、伴手禮..." class="w-full p-3 pl-10 rounded-xl border-none shadow-sm bg-white focus:ring-2 focus:ring-blue-400 outline-none text-lg">
+                <span class="absolute left-3 top-4 text-gray-400">🔍</span>
+            </div>
+
+            <!-- 熱門關鍵字 (新增功能) -->
+            <div class="flex gap-2 overflow-x-auto no-scrollbar">
+                <button onclick="quickSearch('拉麵')" class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-bold whitespace-nowrap hover:bg-yellow-200 transition">🍜 拉麵</button>
+                <button onclick="quickSearch('壽司')" class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-bold whitespace-nowrap hover:bg-blue-200 transition">🍣 壽司</button>
+                <button onclick="quickSearch('湯咖哩')" class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-bold whitespace-nowrap hover:bg-orange-200 transition">🍛 湯咖哩</button>
+                <button onclick="quickSearch('甜點')" class="px-3 py-1 bg-pink-100 text-pink-800 rounded-full text-sm font-bold whitespace-nowrap hover:bg-pink-200 transition">🍰 甜點</button>
             </div>
 
             <!-- 分類標籤 -->
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-orange-100 p-4 rounded-xl cursor-pointer hover:bg-orange-200 transition" onclick="showCategory('food')">
-                    <span class="text-2xl">🍛</span>
-                    <span class="font-bold text-orange-800 ml-2">必吃美食</span>
+                    <span class="text-3xl">🍛</span>
+                    <span class="font-bold text-orange-800 ml-2 text-lg">必吃美食</span>
                 </div>
                 <div class="bg-pink-100 p-4 rounded-xl cursor-pointer hover:bg-pink-200 transition" onclick="showCategory('shopping')">
-                    <span class="text-2xl">🛍️</span>
-                    <span class="font-bold text-pink-800 ml-2">購物血拼</span>
+                    <span class="text-3xl">🛍️</span>
+                    <span class="font-bold text-pink-800 ml-2 text-lg">購物血拼</span>
                 </div>
                 <div class="bg-green-100 p-4 rounded-xl cursor-pointer hover:bg-green-200 transition" onclick="showCategory('spot')">
-                    <span class="text-2xl">🗻</span>
-                    <span class="font-bold text-green-800 ml-2">自然景觀</span>
+                    <span class="text-3xl">🗻</span>
+                    <span class="font-bold text-green-800 ml-2 text-lg">自然景觀</span>
                 </div>
                 <div class="bg-blue-100 p-4 rounded-xl cursor-pointer hover:bg-blue-200 transition" onclick="showCategory('store')">
-                    <span class="text-2xl">🏪</span>
-                    <span class="font-bold text-blue-800 ml-2">超商補給</span>
+                    <span class="text-3xl">🏪</span>
+                    <span class="font-bold text-blue-800 ml-2 text-lg">超商補給</span>
                 </div>
             </div>
 
@@ -172,16 +180,16 @@
     <!-- 底部導航欄 -->
     <nav class="bg-white border-t border-gray-200 flex justify-around items-center p-2 pb-safe fixed bottom-0 w-full z-30 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <button onclick="switchTab('home')" class="nav-item active flex flex-col items-center p-2 w-full text-gray-400 hover:text-blue-500 transition">
-            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-            <span class="text-xs">首頁</span>
+            <svg class="w-7 h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            <span class="text-sm">首頁</span>
         </button>
         <button onclick="switchTab('map')" class="nav-item flex flex-col items-center p-2 w-full text-gray-400 hover:text-blue-500 transition">
-            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0121 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
-            <span class="text-xs">地圖</span>
+            <svg class="w-7 h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0121 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+            <span class="text-sm">地圖</span>
         </button>
         <button onclick="switchTab('explore')" class="nav-item flex flex-col items-center p-2 w-full text-gray-400 hover:text-blue-500 transition">
-            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            <span class="text-xs">探索</span>
+            <svg class="w-7 h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <span class="text-sm">探索</span>
         </button>
     </nav>
 
@@ -201,14 +209,24 @@
             { id: 7, name: "幸運小丑漢堡", type: "food", city: "函館", lat: 41.7656, lng: 140.7176, note: "只有函館才有的漢堡店，份量超大。", icon: "🍔" },
             { id: 8, name: "旭山動物園", type: "spot", city: "旭川", lat: 43.7667, lng: 142.4800, note: "冬天可以看到企鵝散步！", icon: "🐧" },
             { id: 9, name: "成吉思汗烤肉", type: "food", city: "札幌", lat: 43.0551, lng: 141.3514, note: "北海道必吃羊肉燒烤，配啤酒絕讚。", icon: "🥩" },
-            { id: 10, name: "新千歲機場", type: "shopping", city: "千歲", lat: 42.7875, lng: 141.6814, note: "超好逛的機場，最後補貨都在這。", icon: "✈️" }
+            { id: 10, name: "新千歲機場", type: "shopping", city: "千歲", lat: 42.7875, lng: 141.6814, note: "超好逛的機場，最後補貨都在這。", icon: "✈️" },
+            { id: 11, name: "北海道神宮", type: "spot", city: "札幌", lat: 43.0545, lng: 141.3078, note: "北海道總鎮守，環境清幽，適合散步參拜。", icon: "⛩️" },
+            { id: 12, name: "札幌工廠", type: "shopping", city: "札幌", lat: 43.0651, lng: 141.3655, note: "紅磚建築改建的購物中心，氛圍很好。", icon: "🏭" },
+            { id: 13, name: "白色戀人公園", type: "spot", city: "札幌", lat: 43.0886, lng: 141.2707, note: "參觀餅乾生產線，還有歐風庭園可以拍照。", icon: "🍪" },
+            // 新增拉麵與壽司資料
+            { id: 14, name: "一幻拉麵 (總本店)", type: "food", city: "札幌", lat: 43.0506, lng: 141.3508, note: "超濃郁甜蝦湯頭拉麵，排隊名店。", icon: "🍜" },
+            { id: 15, name: "信玄拉麵 (南6條店)", type: "food", city: "札幌", lat: 43.0525, lng: 141.3475, note: "在地人也愛的味噌拉麵，炒飯也是必點。", icon: "🍜" },
+            { id: 16, name: "根室花丸 (JR塔店)", type: "food", city: "札幌", lat: 43.0686, lng: 141.3508, note: "CP值超高的迴轉壽司，就在車站樓上。", icon: "🍣" },
+            { id: 17, name: "Toriton 迴轉壽司", type: "food", city: "札幌", lat: 43.0585, lng: 141.3835, note: "食材新鮮大塊，本地人最推薦的壽司店。", icon: "🍣" },
+            { id: 18, name: "函太郎迴轉壽司", type: "food", city: "函館", lat: 41.7828, lng: 140.7554, note: "函館起家的人氣壽司，靠近海邊風景好。", icon: "🍣" },
+            { id: 19, name: "Suage+ 湯咖哩", type: "food", city: "札幌", lat: 43.0555, lng: 141.3533, note: "知床雞肉串湯咖哩，札幌必吃美食。", icon: "🍛" }
         ];
 
         // 簡單的行程安排 (Mapping Day to Places)
         const itinerary = [
             { day: "Day 1", title: "抵達札幌", desc: "市區觀光與採買補給", color: "bg-blue-100", spots: [1, 2, 9] },
             { day: "Day 2", title: "小樽浪漫遊", desc: "運河散策與甜點之旅", color: "bg-pink-100", spots: [4, 5] },
-            { day: "Day 3", title: "旭川探險", desc: "動物園一日遊", color: "bg-green-100", spots: [8, 3] },
+            { day: "Day 3", title: "札幌名勝巡禮", desc: "神宮參拜與觀光工廠一日遊", color: "bg-green-100", spots: [11, 12, 13, 2] },
             { day: "Day 4", title: "移動至函館", desc: "欣賞百萬夜景", color: "bg-purple-100", spots: [6, 7] },
             { day: "Day 5", title: "最後衝刺", desc: "機場大採購", color: "bg-orange-100", spots: [10] }
         ];
@@ -264,20 +282,20 @@
             list.innerHTML = itinerary.map((item, index) => {
                 const spotNames = item.spots.map(id => {
                     const place = hokkaidoPlaces.find(p => p.id === id);
-                    return place ? `<span class="text-xs bg-white/50 px-1.5 py-0.5 rounded mr-1">${place.icon} ${place.name}</span>` : '';
+                    return place ? `<span class="text-sm bg-white/50 px-2 py-1 rounded mr-1">${place.icon} ${place.name}</span>` : '';
                 }).join('');
 
                 return `
                     <div class="flex items-stretch gap-4">
                         <div class="flex flex-col items-center">
-                            <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm shadow">${index + 1}</div>
+                            <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-base shadow">${index + 1}</div>
                             <div class="w-0.5 bg-gray-200 flex-1 my-1"></div>
                         </div>
                         <div class="flex-1 ${item.color} p-4 rounded-xl mb-2 shadow-sm cursor-pointer hover:shadow-md transition" onclick="showDayDetail(${index})">
                             <div class="flex justify-between items-start">
-                                <h4 class="font-bold text-gray-800">${item.day}：${item.title}</h4>
+                                <h4 class="font-bold text-lg text-gray-800">${item.day}：${item.title}</h4>
                             </div>
-                            <p class="text-xs text-gray-600 mt-1 mb-2">${item.desc}</p>
+                            <p class="text-sm text-gray-600 mt-1 mb-2">${item.desc}</p>
                             <div class="flex flex-wrap gap-1">
                                 ${spotNames}
                             </div>
@@ -390,22 +408,22 @@
         function renderExploreList(list) {
             const container = document.getElementById('explore-list');
             if (list.length === 0) {
-                container.innerHTML = '<div class="text-center text-gray-400 py-10">找不到地點...</div>';
+                container.innerHTML = '<div class="text-center text-gray-400 py-10 text-lg">找不到地點...<br>試試看搜尋「拉麵」或「壽司」？</div>';
                 return;
             }
 
             container.innerHTML = list.map(place => {
                 const isFav = userFavorites.has(place.id);
                 return `
-                    <div class="bg-white p-4 rounded-xl shadow-sm flex justify-between items-center">
+                    <div class="bg-white p-4 rounded-xl shadow-sm flex justify-between items-center" onclick="locatePlace(${place.id})">
                         <div class="flex items-center gap-3">
-                            <div class="text-3xl bg-gray-100 w-12 h-12 flex items-center justify-center rounded-lg">${place.icon}</div>
+                            <div class="text-4xl bg-gray-100 w-14 h-14 flex items-center justify-center rounded-lg">${place.icon}</div>
                             <div>
-                                <h4 class="font-bold text-gray-800">${place.name}</h4>
-                                <p class="text-xs text-gray-500">${place.city} · ${getCategoryName(place.type)}</p>
+                                <h4 class="font-bold text-lg text-gray-800">${place.name}</h4>
+                                <p class="text-sm text-gray-500">${place.city} · ${getCategoryName(place.type)}</p>
                             </div>
                         </div>
-                        <button onclick="toggleFavorite(${place.id}, this)" class="text-2xl transition ${isFav ? 'text-red-500 transform scale-110' : 'text-gray-300'}">
+                        <button onclick="event.stopPropagation(); toggleFavorite(${place.id}, this)" class="text-2xl transition ${isFav ? 'text-red-500 transform scale-110' : 'text-gray-300'}">
                             ${isFav ? '❤️' : '🤍'}
                         </button>
                     </div>
@@ -417,6 +435,27 @@
             document.getElementById('search-input').value = getCategoryName(type);
             const filtered = hokkaidoPlaces.filter(p => p.type === type);
             renderExploreList(filtered);
+        }
+
+        // 新增：快速關鍵字搜尋
+        function quickSearch(keyword) {
+            document.getElementById('search-input').value = keyword;
+            // 觸發搜尋
+            const term = keyword.toLowerCase();
+            const filtered = hokkaidoPlaces.filter(p => p.name.toLowerCase().includes(term) || p.note.includes(term) || p.type.includes(term));
+            renderExploreList(filtered);
+        }
+
+        // 新增：點擊列表直接定位功能
+        function locatePlace(id) {
+            const place = hokkaidoPlaces.find(p => p.id === id);
+            if(place) {
+                switchTab('map');
+                setTimeout(() => {
+                    map.setView([place.lat, place.lng], 15);
+                    openMapCard(place);
+                }, 300);
+            }
         }
 
         // --- 共用工具 ---
