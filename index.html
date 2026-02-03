@@ -2,26 +2,36 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
+    <!-- 優化 Viewport 設定，禁止縮放以模擬原生 App 體驗，並確保寬度適配 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>北海道 5 天旅遊趣</title>
     
-    <!-- 引入 Tailwind CSS (樣式框架) -->
+    <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 引入 Leaflet CSS (地圖樣式) -->
+    <!-- 引入 Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
-    <!-- 設定字型與全域樣式 -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
         
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #F3F4F6; /* 淺灰背景 */
-            -webkit-tap-highlight-color: transparent;
+        /* 設定根字體大小，讓 rem 單位在不同裝置上有更好的比例 */
+        :root {
+            font-size: 16px;
+        }
+        @media (min-width: 768px) {
+            :root {
+                font-size: 18px; /* 平板以上基礎字體加大 */
+            }
         }
 
-        /* 隱藏捲軸但保持滾動功能 (美觀用) */
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #F3F4F6;
+            -webkit-tap-highlight-color: transparent;
+            font-size: 1rem; /* 使用相對單位 */
+        }
+
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -30,22 +40,20 @@
             scrollbar-width: none;
         }
 
-        /* 底部導航欄特效 */
         .nav-item.active {
-            color: #2563EB; /* Tailwind blue-600 */
+            color: #2563EB;
         }
         .nav-item.active span {
             font-weight: 700;
         }
 
-        /* 地圖高度設定 */
         #map {
-            height: calc(100vh - 140px); /* 扣除 Header 和 Footer */
+            /* 調整地圖高度以適應變大的 Header/Footer */
+            height: calc(100vh - 160px); 
             width: 100%;
             z-index: 0;
         }
         
-        /* 動畫效果 */
         .fade-in {
             animation: fadeIn 0.3s ease-in-out;
         }
@@ -53,152 +61,154 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* 加大點擊區域 */
+        button, a {
+            touch-action: manipulation;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 h-screen flex flex-col overflow-hidden">
 
-    <!-- 頂部標題列 -->
-    <header class="bg-blue-500 text-white p-4 shadow-md flex-none z-20">
+    <!-- 頂部標題列 (加大) -->
+    <header class="bg-blue-600 text-white p-5 shadow-md flex-none z-20">
         <div class="flex justify-between items-center">
-            <h1 class="text-2xl font-bold flex items-center gap-2">
+            <h1 class="text-3xl font-bold flex items-center gap-2 tracking-wide">
                 ❄️ 北海道旅遊趣
             </h1>
-            <button onclick="toggleMockLocation()" class="text-sm bg-white/20 px-2 py-1 rounded hover:bg-white/30 transition">
+            <button onclick="toggleMockLocation()" class="text-base bg-white/20 px-3 py-2 rounded-lg hover:bg-white/30 transition font-medium">
                 📍 模擬定位
             </button>
         </div>
     </header>
 
-    <!-- 主要內容區 (可滾動) -->
-    <main id="app-content" class="flex-1 overflow-y-auto relative scroll-smooth no-scrollbar">
+    <!-- 主要內容區 -->
+    <main id="app-content" class="flex-1 overflow-y-auto relative scroll-smooth no-scrollbar bg-gray-100">
         
-        <!-- 1️⃣ 首頁視圖 (Home View) -->
-        <div id="view-home" class="p-4 space-y-6 fade-in pb-24">
+        <!-- 1️⃣ 首頁視圖 (字體加大版) -->
+        <div id="view-home" class="p-5 space-y-8 fade-in pb-32">
             <!-- 歡迎卡片 -->
-            <div class="bg-gradient-to-r from-blue-400 to-cyan-300 rounded-2xl p-6 text-white shadow-lg">
-                <p class="text-base opacity-90">目前位置</p>
-                <h2 id="current-location-text" class="text-3xl font-bold mt-1">🇯🇵 尚未定位</h2>
-                <div class="mt-4 flex gap-3">
-                    <button onclick="switchTab('map', 'food')" class="flex-1 bg-white/20 backdrop-blur-sm py-2 rounded-lg text-base font-medium hover:bg-white/30 transition">🍜 找美食</button>
-                    <button onclick="switchTab('map', 'store')" class="flex-1 bg-white/20 backdrop-blur-sm py-2 rounded-lg text-base font-medium hover:bg-white/30 transition">🏪 找超商</button>
-                    <button onclick="switchTab('map', 'shopping')" class="flex-1 bg-white/20 backdrop-blur-sm py-2 rounded-lg text-base font-medium hover:bg-white/30 transition">🛍️ 伴手禮</button>
+            <div class="bg-gradient-to-r from-blue-500 to-cyan-400 rounded-3xl p-6 text-white shadow-xl">
+                <p class="text-lg opacity-90 font-medium">目前位置</p>
+                <h2 id="current-location-text" class="text-4xl font-bold mt-2 tracking-tight">🇯🇵 尚未定位</h2>
+                <div class="mt-6 flex gap-4">
+                    <button onclick="switchTab('map', 'food')" class="flex-1 bg-white/20 backdrop-blur-md py-3 rounded-xl text-lg font-bold hover:bg-white/30 transition shadow-sm border border-white/10">🍜 找美食</button>
+                    <button onclick="switchTab('map', 'store')" class="flex-1 bg-white/20 backdrop-blur-md py-3 rounded-xl text-lg font-bold hover:bg-white/30 transition shadow-sm border border-white/10">🏪 找超商</button>
+                    <button onclick="switchTab('map', 'shopping')" class="flex-1 bg-white/20 backdrop-blur-md py-3 rounded-xl text-lg font-bold hover:bg-white/30 transition shadow-sm border border-white/10">🛍️ 伴手禮</button>
                 </div>
             </div>
 
             <!-- 行程時間軸 -->
             <div>
-                <h3 class="font-bold text-xl mb-3 text-gray-700">🗓️ 5 天行程總覽</h3>
-                <div class="space-y-3" id="itinerary-list">
-                    <!-- JS 會動態產生行程卡片 -->
+                <h3 class="font-bold text-2xl mb-4 text-gray-700 ml-1">🗓️ 5 天行程總覽</h3>
+                <div class="space-y-4" id="itinerary-list">
+                    <!-- JS 生成 -->
                 </div>
             </div>
         </div>
 
-        <!-- 2️⃣ 地圖視圖 (Map View) -->
+        <!-- 2️⃣ 地圖視圖 -->
         <div id="view-map" class="hidden h-full flex flex-col relative fade-in">
-            <!-- 篩選按鈕 (懸浮) -->
-            <div class="absolute top-2 left-0 right-0 z-[1000] px-2">
-                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-                    <button onclick="filterMap('all')" class="map-filter px-4 py-2 bg-white shadow-md rounded-full text-base whitespace-nowrap border border-gray-200 active-filter font-bold text-blue-600 ring-2 ring-blue-500">全部</button>
-                    <button onclick="filterMap('food')" class="map-filter px-4 py-2 bg-white shadow-md rounded-full text-base whitespace-nowrap border border-gray-200">🍜 美食</button>
-                    <button onclick="filterMap('spot')" class="map-filter px-4 py-2 bg-white shadow-md rounded-full text-base whitespace-nowrap border border-gray-200">📸 景點</button>
-                    <button onclick="filterMap('shopping')" class="map-filter px-4 py-2 bg-white shadow-md rounded-full text-base whitespace-nowrap border border-gray-200">🛍️ 購物</button>
-                    <button onclick="filterMap('store')" class="map-filter px-4 py-2 bg-white shadow-md rounded-full text-base whitespace-nowrap border border-gray-200">🏪 超商</button>
+            <!-- 篩選按鈕 (加大) -->
+            <div class="absolute top-4 left-0 right-0 z-[1000] px-3">
+                <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2 px-1">
+                    <button onclick="filterMap('all')" class="map-filter px-6 py-3 bg-white shadow-lg rounded-full text-lg whitespace-nowrap border border-gray-200 active-filter font-bold text-blue-600 ring-4 ring-blue-500/30">全部</button>
+                    <button onclick="filterMap('food')" class="map-filter px-6 py-3 bg-white shadow-lg rounded-full text-lg whitespace-nowrap border border-gray-200 text-gray-700">🍜 美食</button>
+                    <button onclick="filterMap('spot')" class="map-filter px-6 py-3 bg-white shadow-lg rounded-full text-lg whitespace-nowrap border border-gray-200 text-gray-700">📸 景點</button>
+                    <button onclick="filterMap('shopping')" class="map-filter px-6 py-3 bg-white shadow-lg rounded-full text-lg whitespace-nowrap border border-gray-200 text-gray-700">🛍️ 購物</button>
+                    <button onclick="filterMap('store')" class="map-filter px-6 py-3 bg-white shadow-lg rounded-full text-lg whitespace-nowrap border border-gray-200 text-gray-700">🏪 超商</button>
                 </div>
             </div>
             
-            <!-- 地圖容器 -->
             <div id="map" class="w-full h-full bg-gray-200"></div>
 
-            <!-- 底部資訊卡 (點擊地標後顯示) -->
-            <div id="map-card" class="absolute bottom-4 left-4 right-4 bg-white p-4 rounded-xl shadow-2xl z-[1000] hidden transform transition-all duration-300 translate-y-0">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <span id="card-type" class="text-sm font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-600">類型</span>
-                        <h3 id="card-title" class="text-xl font-bold mt-1 text-gray-800">地點名稱</h3>
-                        <p id="card-desc" class="text-base text-gray-500 mt-1 line-clamp-2">描述</p>
+            <!-- 底部資訊卡 (加大) -->
+            <div id="map-card" class="absolute bottom-6 left-4 right-4 bg-white p-6 rounded-2xl shadow-2xl z-[1000] hidden transform transition-all duration-300 translate-y-0 border border-gray-100">
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex-1 pr-4">
+                        <span id="card-type" class="text-base font-bold px-3 py-1 rounded-md bg-blue-100 text-blue-700 inline-block mb-2">類型</span>
+                        <h3 id="card-title" class="text-2xl font-bold text-gray-900 leading-tight">地點名稱</h3>
                     </div>
-                    <button onclick="closeMapCard()" class="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+                    <button onclick="closeMapCard()" class="text-gray-400 hover:text-gray-600 p-2 -mr-2 -mt-2">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
                 </div>
-                <div class="mt-4 flex gap-2">
-                    <a id="card-google-btn" href="#" target="_blank" class="flex-1 bg-blue-600 text-white text-center py-2 rounded-lg text-base font-bold shadow hover:bg-blue-700 transition">
-                        🗺️ Google 導航
+                <p id="card-desc" class="text-lg text-gray-600 mb-6 line-clamp-3 leading-relaxed">描述</p>
+                
+                <div class="flex gap-3">
+                    <a id="card-google-btn" href="#" target="_blank" class="flex-1 bg-blue-600 text-white text-center py-4 rounded-xl text-lg font-bold shadow-lg hover:bg-blue-700 active:scale-95 transition flex items-center justify-center gap-2">
+                        <span>🗺️</span> Google 導航
                     </a>
-                    <button id="card-fav-btn" class="px-3 py-2 border border-gray-300 rounded-lg text-gray-500 hover:bg-gray-50">
-                        ❤️
+                    <button id="card-fav-btn" class="px-5 py-3 border-2 border-gray-200 rounded-xl text-2xl text-gray-400 hover:bg-gray-50 active:scale-95 transition">
+                        🤍
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- 3️⃣ 探索/分類視圖 (Explore View) -->
-        <div id="view-explore" class="hidden p-4 space-y-4 fade-in pb-24">
-            <h2 class="text-2xl font-bold text-gray-800">🔍 探索類別</h2>
+        <!-- 3️⃣ 探索視圖 (加大) -->
+        <div id="view-explore" class="hidden p-5 space-y-6 fade-in pb-32">
+            <h2 class="text-3xl font-bold text-gray-800">🔍 探索類別</h2>
             
-            <!-- 搜尋框 -->
             <div class="relative">
-                <input type="text" id="search-input" placeholder="搜尋拉麵、伴手禮..." class="w-full p-3 pl-10 rounded-xl border-none shadow-sm bg-white focus:ring-2 focus:ring-blue-400 outline-none text-lg">
-                <span class="absolute left-3 top-4 text-gray-400">🔍</span>
+                <input type="text" id="search-input" placeholder="搜尋拉麵、伴手禮..." class="w-full p-4 pl-12 rounded-2xl border border-gray-200 shadow-sm bg-white focus:ring-4 focus:ring-blue-200 outline-none text-xl">
+                <span class="absolute left-4 top-5 text-gray-400 text-xl">🔍</span>
             </div>
 
-            <!-- 熱門關鍵字 (新增功能) -->
-            <div class="flex gap-2 overflow-x-auto no-scrollbar">
-                <button onclick="quickSearch('拉麵')" class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-bold whitespace-nowrap hover:bg-yellow-200 transition">🍜 拉麵</button>
-                <button onclick="quickSearch('壽司')" class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-bold whitespace-nowrap hover:bg-blue-200 transition">🍣 壽司</button>
-                <button onclick="quickSearch('湯咖哩')" class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-bold whitespace-nowrap hover:bg-orange-200 transition">🍛 湯咖哩</button>
-                <button onclick="quickSearch('甜點')" class="px-3 py-1 bg-pink-100 text-pink-800 rounded-full text-sm font-bold whitespace-nowrap hover:bg-pink-200 transition">🍰 甜點</button>
+            <!-- 熱門關鍵字 (加大) -->
+            <div class="flex gap-3 overflow-x-auto no-scrollbar py-2">
+                <button onclick="quickSearch('拉麵')" class="px-5 py-2 bg-yellow-100 text-yellow-900 rounded-full text-base font-bold whitespace-nowrap border border-yellow-200 shadow-sm">🍜 拉麵</button>
+                <button onclick="quickSearch('壽司')" class="px-5 py-2 bg-blue-100 text-blue-900 rounded-full text-base font-bold whitespace-nowrap border border-blue-200 shadow-sm">🍣 壽司</button>
+                <button onclick="quickSearch('湯咖哩')" class="px-5 py-2 bg-orange-100 text-orange-900 rounded-full text-base font-bold whitespace-nowrap border border-orange-200 shadow-sm">🍛 湯咖哩</button>
+                <button onclick="quickSearch('甜點')" class="px-5 py-2 bg-pink-100 text-pink-900 rounded-full text-base font-bold whitespace-nowrap border border-pink-200 shadow-sm">🍰 甜點</button>
             </div>
 
-            <!-- 分類標籤 -->
-            <div class="grid grid-cols-2 gap-3">
-                <div class="bg-orange-100 p-4 rounded-xl cursor-pointer hover:bg-orange-200 transition" onclick="showCategory('food')">
-                    <span class="text-3xl">🍛</span>
-                    <span class="font-bold text-orange-800 ml-2 text-lg">必吃美食</span>
+            <!-- 分類標籤 (加大) -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-orange-50 border border-orange-100 p-5 rounded-2xl cursor-pointer hover:bg-orange-100 transition shadow-sm active:scale-95 transform duration-200" onclick="showCategory('food')">
+                    <span class="text-5xl block mb-2">🍛</span>
+                    <span class="font-bold text-orange-900 text-xl">必吃美食</span>
                 </div>
-                <div class="bg-pink-100 p-4 rounded-xl cursor-pointer hover:bg-pink-200 transition" onclick="showCategory('shopping')">
-                    <span class="text-3xl">🛍️</span>
-                    <span class="font-bold text-pink-800 ml-2 text-lg">購物血拼</span>
+                <div class="bg-pink-50 border border-pink-100 p-5 rounded-2xl cursor-pointer hover:bg-pink-100 transition shadow-sm active:scale-95 transform duration-200" onclick="showCategory('shopping')">
+                    <span class="text-5xl block mb-2">🛍️</span>
+                    <span class="font-bold text-pink-900 text-xl">購物血拼</span>
                 </div>
-                <div class="bg-green-100 p-4 rounded-xl cursor-pointer hover:bg-green-200 transition" onclick="showCategory('spot')">
-                    <span class="text-3xl">🗻</span>
-                    <span class="font-bold text-green-800 ml-2 text-lg">自然景觀</span>
+                <div class="bg-green-50 border border-green-100 p-5 rounded-2xl cursor-pointer hover:bg-green-100 transition shadow-sm active:scale-95 transform duration-200" onclick="showCategory('spot')">
+                    <span class="text-5xl block mb-2">🗻</span>
+                    <span class="font-bold text-green-900 text-xl">自然景觀</span>
                 </div>
-                <div class="bg-blue-100 p-4 rounded-xl cursor-pointer hover:bg-blue-200 transition" onclick="showCategory('store')">
-                    <span class="text-3xl">🏪</span>
-                    <span class="font-bold text-blue-800 ml-2 text-lg">超商補給</span>
+                <div class="bg-blue-50 border border-blue-100 p-5 rounded-2xl cursor-pointer hover:bg-blue-100 transition shadow-sm active:scale-95 transform duration-200" onclick="showCategory('store')">
+                    <span class="text-5xl block mb-2">🏪</span>
+                    <span class="font-bold text-blue-900 text-xl">超商補給</span>
                 </div>
             </div>
 
-            <!-- 列表區域 -->
-            <div id="explore-list" class="space-y-3 mt-4">
-                <!-- JS 動態生成 -->
+            <div id="explore-list" class="space-y-4 mt-6">
+                <!-- JS 生成 -->
             </div>
         </div>
 
     </main>
 
-    <!-- 底部導航欄 -->
-    <nav class="bg-white border-t border-gray-200 flex justify-around items-center p-2 pb-safe fixed bottom-0 w-full z-30 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <button onclick="switchTab('home')" class="nav-item active flex flex-col items-center p-2 w-full text-gray-400 hover:text-blue-500 transition">
-            <svg class="w-7 h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-            <span class="text-sm">首頁</span>
+    <!-- 底部導航欄 (加大觸控區) -->
+    <nav class="bg-white border-t border-gray-200 flex justify-around items-center px-2 py-3 pb-safe fixed bottom-0 w-full z-30 shadow-[0_-4px_15px_-3px_rgba(0,0,0,0.1)]">
+        <button onclick="switchTab('home')" class="nav-item active flex flex-col items-center p-2 w-full text-gray-400 hover:text-blue-600 transition active:scale-90">
+            <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            <span class="text-base font-medium">首頁</span>
         </button>
-        <button onclick="switchTab('map')" class="nav-item flex flex-col items-center p-2 w-full text-gray-400 hover:text-blue-500 transition">
-            <svg class="w-7 h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0121 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
-            <span class="text-sm">地圖</span>
+        <button onclick="switchTab('map')" class="nav-item flex flex-col items-center p-2 w-full text-gray-400 hover:text-blue-600 transition active:scale-90">
+            <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0121 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+            <span class="text-base font-medium">地圖</span>
         </button>
-        <button onclick="switchTab('explore')" class="nav-item flex flex-col items-center p-2 w-full text-gray-400 hover:text-blue-500 transition">
-            <svg class="w-7 h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            <span class="text-sm">探索</span>
+        <button onclick="switchTab('explore')" class="nav-item flex flex-col items-center p-2 w-full text-gray-400 hover:text-blue-600 transition active:scale-90">
+            <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <span class="text-base font-medium">探索</span>
         </button>
     </nav>
 
-    <!-- 引入 Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        // --- 1. 資料層 (Data Layer) ---
-        // 使用 JSON 格式，方便學生練習與擴充
         const hokkaidoPlaces = [
             { id: 1, name: "大通公園 (電視塔)", type: "spot", city: "札幌", lat: 43.0611, lng: 141.3564, note: "札幌的地標，必拍電視塔，冬天有雪祭。", icon: "🗼" },
             { id: 2, name: "狸小路商店街", type: "shopping", city: "札幌", lat: 43.0567, lng: 141.3542, note: "超長商店街，藥妝店、唐吉訶德都在這。", icon: "🛍️" },
@@ -213,7 +223,6 @@
             { id: 11, name: "北海道神宮", type: "spot", city: "札幌", lat: 43.0545, lng: 141.3078, note: "北海道總鎮守，環境清幽，適合散步參拜。", icon: "⛩️" },
             { id: 12, name: "札幌工廠", type: "shopping", city: "札幌", lat: 43.0651, lng: 141.3655, note: "紅磚建築改建的購物中心，氛圍很好。", icon: "🏭" },
             { id: 13, name: "白色戀人公園", type: "spot", city: "札幌", lat: 43.0886, lng: 141.2707, note: "參觀餅乾生產線，還有歐風庭園可以拍照。", icon: "🍪" },
-            // 新增拉麵與壽司資料
             { id: 14, name: "一幻拉麵 (總本店)", type: "food", city: "札幌", lat: 43.0506, lng: 141.3508, note: "超濃郁甜蝦湯頭拉麵，排隊名店。", icon: "🍜" },
             { id: 15, name: "信玄拉麵 (南6條店)", type: "food", city: "札幌", lat: 43.0525, lng: 141.3475, note: "在地人也愛的味噌拉麵，炒飯也是必點。", icon: "🍜" },
             { id: 16, name: "根室花丸 (JR塔店)", type: "food", city: "札幌", lat: 43.0686, lng: 141.3508, note: "CP值超高的迴轉壽司，就在車站樓上。", icon: "🍣" },
@@ -222,7 +231,6 @@
             { id: 19, name: "Suage+ 湯咖哩", type: "food", city: "札幌", lat: 43.0555, lng: 141.3533, note: "知床雞肉串湯咖哩，札幌必吃美食。", icon: "🍛" }
         ];
 
-        // 簡單的行程安排 (Mapping Day to Places)
         const itinerary = [
             { day: "Day 1", title: "抵達札幌", desc: "市區觀光與採買補給", color: "bg-blue-100", spots: [1, 2, 9] },
             { day: "Day 2", title: "小樽浪漫遊", desc: "運河散策與甜點之旅", color: "bg-pink-100", spots: [4, 5] },
@@ -231,18 +239,15 @@
             { day: "Day 5", title: "最後衝刺", desc: "機場大採購", color: "bg-orange-100", spots: [10] }
         ];
 
-        // --- 2. 邏輯層 (Logic Layer) ---
         let map;
         let markers = [];
-        let userFavorites = new Set(); // 使用 Set 儲存 ID
+        let userFavorites = new Set();
 
-        // 初始化
         document.addEventListener('DOMContentLoaded', () => {
             renderItinerary();
             renderExploreList(hokkaidoPlaces);
             initMap();
             
-            // 搜尋監聽
             document.getElementById('search-input').addEventListener('input', (e) => {
                 const term = e.target.value.toLowerCase();
                 const filtered = hokkaidoPlaces.filter(p => p.name.toLowerCase().includes(term) || p.note.includes(term));
@@ -250,24 +255,17 @@
             });
         });
 
-        // 切換分頁 (Tabs)
         function switchTab(tabName, filterType = null) {
-            // 隱藏所有視圖
             ['home', 'map', 'explore'].forEach(t => {
                 document.getElementById(`view-${t}`).classList.add('hidden');
             });
             
-            // 移除導航激活狀態
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-
-            // 顯示目標視圖
             document.getElementById(`view-${tabName}`).classList.remove('hidden');
             
-            // 激活導航按鈕 (這裡簡單用 Index 判斷，實際可優化)
             const navIndex = tabName === 'home' ? 0 : tabName === 'map' ? 1 : 2;
             document.querySelectorAll('.nav-item')[navIndex].classList.add('active');
 
-            // 特殊處理：如果是地圖，需要 resize 確保渲染正確
             if (tabName === 'map') {
                 setTimeout(() => {
                     map.invalidateSize();
@@ -276,26 +274,25 @@
             }
         }
 
-        // --- 渲染首頁行程 ---
         function renderItinerary() {
             const list = document.getElementById('itinerary-list');
             list.innerHTML = itinerary.map((item, index) => {
                 const spotNames = item.spots.map(id => {
                     const place = hokkaidoPlaces.find(p => p.id === id);
-                    return place ? `<span class="text-sm bg-white/50 px-2 py-1 rounded mr-1">${place.icon} ${place.name}</span>` : '';
+                    return place ? `<span class="text-base bg-white/60 px-2 py-1 rounded-md mr-1 inline-block mt-1 border border-gray-100 text-gray-700">${place.icon} ${place.name}</span>` : '';
                 }).join('');
 
                 return `
                     <div class="flex items-stretch gap-4">
                         <div class="flex flex-col items-center">
-                            <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-base shadow">${index + 1}</div>
-                            <div class="w-0.5 bg-gray-200 flex-1 my-1"></div>
+                            <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xl shadow-md z-10">${index + 1}</div>
+                            <div class="w-1 bg-gray-200 flex-1 -my-2 rounded-full"></div>
                         </div>
-                        <div class="flex-1 ${item.color} p-4 rounded-xl mb-2 shadow-sm cursor-pointer hover:shadow-md transition" onclick="showDayDetail(${index})">
+                        <div class="flex-1 ${item.color} p-5 rounded-2xl mb-4 shadow-sm cursor-pointer hover:shadow-md transition border border-black/5 active:scale-[0.98]" onclick="showDayDetail(${index})">
                             <div class="flex justify-between items-start">
-                                <h4 class="font-bold text-lg text-gray-800">${item.day}：${item.title}</h4>
+                                <h4 class="font-bold text-xl text-gray-900">${item.day}：${item.title}</h4>
                             </div>
-                            <p class="text-sm text-gray-600 mt-1 mb-2">${item.desc}</p>
+                            <p class="text-lg text-gray-700 mt-2 mb-3 leading-relaxed">${item.desc}</p>
                             <div class="flex flex-wrap gap-1">
                                 ${spotNames}
                             </div>
@@ -306,7 +303,6 @@
         }
 
         function showDayDetail(dayIndex) {
-            // 這裡可以做導覽到該日第一個景點的地圖
             const firstSpotId = itinerary[dayIndex].spots[0];
             const spot = hokkaidoPlaces.find(p => p.id === firstSpotId);
             if (spot) {
@@ -318,64 +314,48 @@
             }
         }
 
-        // --- 地圖邏輯 ---
         function initMap() {
-            // 預設中心點：札幌
             map = L.map('map').setView([43.0618, 141.3545], 11);
-
-            // 使用 OpenStreetMap 圖磚 (免費)
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
+                attribution: '&copy; OpenStreetMap'
             }).addTo(map);
-
-            // 載入所有景點
             renderMarkers(hokkaidoPlaces);
         }
 
         function renderMarkers(places) {
-            // 清除舊標記
             markers.forEach(m => map.removeLayer(m));
             markers = [];
 
             places.forEach(place => {
-                // 自定義 Icon (簡單用 DivIcon 顯示 Emoji)
                 const myIcon = L.divIcon({
                     className: 'custom-div-icon',
-                    html: `<div style="font-size: 24px; text-shadow: 2px 2px 0px white;">${place.icon}</div>`,
-                    iconSize: [30, 30],
-                    iconAnchor: [15, 15]
+                    html: `<div style="font-size: 32px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3)); cursor: pointer;">${place.icon}</div>`,
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20]
                 });
 
                 const marker = L.marker([place.lat, place.lng], { icon: myIcon }).addTo(map);
-                
-                // 點擊事件
                 marker.on('click', () => {
                     openMapCard(place);
                     map.setView([place.lat, place.lng], 15);
                 });
-                
                 markers.push(marker);
             });
         }
 
         function filterMap(type) {
-            // UI 按鈕狀態更新
             document.querySelectorAll('.map-filter').forEach(btn => {
                 if ((type === 'all' && btn.innerText.includes('全部')) || btn.innerText.includes(getCategoryName(type))) {
-                    btn.classList.add('active-filter', 'font-bold', 'text-blue-600', 'ring-2', 'ring-blue-500');
+                    btn.classList.add('active-filter', 'font-bold', 'text-blue-600', 'ring-4', 'ring-blue-500/30');
+                    btn.classList.remove('text-gray-700');
                 } else {
-                    btn.classList.remove('active-filter', 'font-bold', 'text-blue-600', 'ring-2', 'ring-blue-500');
+                    btn.classList.remove('active-filter', 'font-bold', 'text-blue-600', 'ring-4', 'ring-blue-500/30');
+                    btn.classList.add('text-gray-700');
                 }
             });
 
-            // 資料過濾
-            const filtered = type === 'all' 
-                ? hokkaidoPlaces 
-                : hokkaidoPlaces.filter(p => p.type === type);
-            
+            const filtered = type === 'all' ? hokkaidoPlaces : hokkaidoPlaces.filter(p => p.type === type);
             renderMarkers(filtered);
-
-            // 自動縮放以顯示所有點
             if (filtered.length > 0) {
                 const group = new L.featureGroup(markers);
                 map.fitBounds(group.getBounds().pad(0.1));
@@ -391,39 +371,39 @@
             document.getElementById('card-desc').innerText = place.note;
             document.getElementById('card-google-btn').href = googleUrl;
             
-            // 設定收藏按鈕狀態
             const favBtn = document.getElementById('card-fav-btn');
             updateFavBtnStyle(favBtn, place.id);
             favBtn.onclick = () => toggleFavorite(place.id, favBtn);
 
             card.classList.remove('hidden');
-            card.classList.remove('translate-y-full');
+            setTimeout(() => card.classList.remove('translate-y-full'), 10);
         }
 
         function closeMapCard() {
-            document.getElementById('map-card').classList.add('hidden');
+            const card = document.getElementById('map-card');
+            card.classList.add('translate-y-full');
+            setTimeout(() => card.classList.add('hidden'), 300);
         }
 
-        // --- 探索頁邏輯 ---
         function renderExploreList(list) {
             const container = document.getElementById('explore-list');
             if (list.length === 0) {
-                container.innerHTML = '<div class="text-center text-gray-400 py-10 text-lg">找不到地點...<br>試試看搜尋「拉麵」或「壽司」？</div>';
+                container.innerHTML = '<div class="text-center text-gray-500 py-12 text-xl font-medium">找不到地點...<br>試試看搜尋「拉麵」或「壽司」？</div>';
                 return;
             }
 
             container.innerHTML = list.map(place => {
                 const isFav = userFavorites.has(place.id);
                 return `
-                    <div class="bg-white p-4 rounded-xl shadow-sm flex justify-between items-center" onclick="locatePlace(${place.id})">
-                        <div class="flex items-center gap-3">
-                            <div class="text-4xl bg-gray-100 w-14 h-14 flex items-center justify-center rounded-lg">${place.icon}</div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm flex justify-between items-center border border-gray-100 active:scale-[0.98] transition" onclick="locatePlace(${place.id})">
+                        <div class="flex items-center gap-4">
+                            <div class="text-5xl bg-gray-50 w-16 h-16 flex items-center justify-center rounded-xl">${place.icon}</div>
                             <div>
-                                <h4 class="font-bold text-lg text-gray-800">${place.name}</h4>
-                                <p class="text-sm text-gray-500">${place.city} · ${getCategoryName(place.type)}</p>
+                                <h4 class="font-bold text-xl text-gray-900">${place.name}</h4>
+                                <p class="text-base text-gray-500 mt-1">${place.city} · ${getCategoryName(place.type)}</p>
                             </div>
                         </div>
-                        <button onclick="event.stopPropagation(); toggleFavorite(${place.id}, this)" class="text-2xl transition ${isFav ? 'text-red-500 transform scale-110' : 'text-gray-300'}">
+                        <button onclick="event.stopPropagation(); toggleFavorite(${place.id}, this)" class="text-3xl p-2 transition ${isFav ? 'text-red-500 transform scale-110' : 'text-gray-300'}">
                             ${isFav ? '❤️' : '🤍'}
                         </button>
                     </div>
@@ -437,16 +417,13 @@
             renderExploreList(filtered);
         }
 
-        // 新增：快速關鍵字搜尋
         function quickSearch(keyword) {
             document.getElementById('search-input').value = keyword;
-            // 觸發搜尋
             const term = keyword.toLowerCase();
             const filtered = hokkaidoPlaces.filter(p => p.name.toLowerCase().includes(term) || p.note.includes(term) || p.type.includes(term));
             renderExploreList(filtered);
         }
 
-        // 新增：點擊列表直接定位功能
         function locatePlace(id) {
             const place = hokkaidoPlaces.find(p => p.id === id);
             if(place) {
@@ -458,14 +435,8 @@
             }
         }
 
-        // --- 共用工具 ---
         function getCategoryName(type) {
-            const map = {
-                'food': '美食',
-                'shopping': '購物',
-                'spot': '景點',
-                'store': '超商'
-            };
+            const map = { 'food': '美食', 'shopping': '購物', 'spot': '景點', 'store': '超商' };
             return map[type] || '其他';
         }
 
@@ -485,7 +456,6 @@
                     btnElement.classList.add('text-red-500', 'scale-110');
                 }
             }
-            // 如果在 Explore 頁面，刷新一下列表以保持狀態同步 (可選)
         }
 
         function toggleMockLocation() {
@@ -494,12 +464,10 @@
                 el.innerText = '🇯🇵 尚未定位';
             } else {
                 el.innerText = '📍 札幌市中央區';
-                // 模擬移動地圖
                 if(map) map.setView([43.0611, 141.3564], 14);
             }
         }
         
-        // 修正 Fav 按鈕樣式 (Map card 用)
         function updateFavBtnStyle(btn, id) {
             if (userFavorites.has(id)) {
                 btn.innerText = '❤️';
@@ -509,7 +477,6 @@
                 btn.classList.remove('bg-red-50', 'border-red-200');
             }
         }
-
     </script>
 </body>
 </html>
