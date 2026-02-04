@@ -298,7 +298,7 @@
         let expenseList = JSON.parse(localStorage.getItem('hokkaido_expenses')) || [];
         
         // 優先使用您提供的正確 URL
-        const DEFAULT_URL = "https://script.google.com/macros/s/AKfycbyGdnxRVEY4_lpRozTYUqmLKP8634VmE_LRpSKsMoTm4H4ATD8b6Bs30PLrpQF4tbE/exec";
+        const DEFAULT_URL = "https://script.google.com/macros/s/AKfycbwmHJUPg8d5kifnsC3rn-coFyzJOso0ihMZgrNUf8IGcbg6KYqMHCAC-Or8r35Xssct/exec";
         // 只有當使用者「手動」更新過，才使用 localStorage，否則強制使用正確的 DEFAULT_URL
         let sheetUrl = localStorage.getItem('hokkaido_sheet_url_custom') === 'true' 
             ? (localStorage.getItem('hokkaido_sheet_url') || DEFAULT_URL) 
