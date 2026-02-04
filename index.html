@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>北海道旅遊全攻略 App</title>
+    <title>2026北海道旅遊全攻略 App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
@@ -215,8 +215,8 @@
                 <div class="flex justify-between items-end mb-3">
                     <h3 class="font-bold text-xl text-gray-700">今日花費</h3>
                     <div class="flex items-center gap-2">
-                        <button onclick="clearOldRecords()" class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-300 transition">
-                            🗑️ 清除舊紀錄
+                        <button onclick="clearLocalRecords()" class="text-xs bg-red-100 text-red-600 px-3 py-1.5 rounded-lg border border-red-200 font-bold hover:bg-red-200 transition">
+                            🗑️ 清除手機列表
                         </button>
                         <span class="text-2xl font-bold text-blue-600">¥ <span id="total-amount">0</span></span>
                     </div>
@@ -235,7 +235,7 @@
             </div>
         </div>
 
-        <!-- 6️⃣ 工具 (Updated) -->
+        <!-- 6️⃣ 工具 -->
         <div id="view-tools" class="hidden p-5 space-y-6 fade-in pb-24">
             <h2 class="text-2xl font-bold text-gray-800 mb-2">🇯🇵 北海道生存指指通</h2>
             <p class="text-sm text-gray-500 mb-4">點擊卡片可播放/放大文字</p>
@@ -391,7 +391,7 @@
             { title: "Funliday", desc: "狸小路行程規劃", url: "https://www.funliday.com/posts/tanukikoji/", icon: "📝" }
         ];
 
-        // --- 實用日語資料 ---
+        // --- 實用日語資料 (Updated) ---
         const phrases = [
             {
                 category: "👋 基本問候",
@@ -437,7 +437,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             renderLinks();
-            renderPhrases(); // Render new phrases
+            renderPhrases(); 
             renderExplore(places);
             renderExpenseList();
             renderItineraryDetails(); 
@@ -599,26 +599,21 @@
             }
         }
 
-        // --- 清除舊紀錄功能 ---
-        function clearOldRecords() {
-            if(!confirm("確定要清除「今天之前」的所有紀錄嗎？\n(已同步的資料不會從 Google 試算表刪除)")) return;
-
-            const today = new Date().toISOString().split('T')[0];
+        // --- 清除手機紀錄 (新功能) ---
+        function clearLocalRecords() {
+            const unsyncedCount = expenseList.filter(i => !i.synced).length;
+            let msg = "確定要清除手機上的所有記帳紀錄嗎？\n此操作不會影響 Google 試算表上的資料。";
             
-            // 過濾留下「今天及未來」的紀錄
-            const newExpenseList = expenseList.filter(item => item.date >= today);
-            
-            // 找出被刪除的數量 (僅供 debug 或提示)
-            const deletedCount = expenseList.length - newExpenseList.length;
-
-            if (deletedCount > 0) {
-                expenseList = newExpenseList;
-                localStorage.setItem('hokkaido_expenses', JSON.stringify(expenseList));
-                renderExpenseList();
-                alert(`已清除 ${deletedCount} 筆舊紀錄！`);
-            } else {
-                alert("沒有舊紀錄需要清除。");
+            if (unsyncedCount > 0) {
+                msg = `⚠️ 注意：有 ${unsyncedCount} 筆資料尚未同步到雲端！\n` + msg + "\n(清除後未同步資料將無法復原)";
             }
+            
+            if(!confirm(msg)) return;
+
+            expenseList = [];
+            localStorage.setItem('hokkaido_expenses', JSON.stringify(expenseList));
+            renderExpenseList();
+            alert("手機紀錄已清除！");
         }
 
         function addExpense() {
