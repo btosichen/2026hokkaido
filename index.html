@@ -22,26 +22,20 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 隱藏捲軸 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* 導航樣式 */
         .nav-item.active { color: #2563EB; }
         .nav-item.active svg { fill: currentColor; fill-opacity: 0.2; }
         .nav-item.active span { font-weight: 700; }
 
-        /* 地圖高度 */
         #map { height: 100%; width: 100%; z-index: 0; }
         
-        /* 動畫 */
         .fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 卡片樣式 */
         .card-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.1); }
         
-        /* 記帳表單樣式 */
         .input-field {
             width: 100%; padding: 12px; border-radius: 12px;
             border: 1px solid #e2e8f0; background: #fff;
@@ -49,7 +43,6 @@
         }
         .input-field:focus { border-color: #3b82f6; ring: 2px solid #93c5fd; }
 
-        /* 模態視窗 (Modal) */
         .modal-overlay {
             background-color: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(2px);
@@ -58,7 +51,6 @@
 </head>
 <body class="text-gray-800">
 
-    <!-- 頂部標題 -->
     <header class="bg-blue-600 text-white p-4 shadow-md flex-none z-20 flex justify-between items-center">
         <h1 class="text-2xl font-bold tracking-wide">❄️ 北海道攻略</h1>
         <div class="text-sm bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
@@ -66,12 +58,10 @@
         </div>
     </header>
 
-    <!-- 主內容區 -->
     <main id="app-content" class="flex-1 overflow-y-auto relative scroll-smooth no-scrollbar bg-gray-50">
         
-        <!-- 1️⃣ 首頁 (Home) -->
+        <!-- 1️⃣ 首頁 -->
         <div id="view-home" class="p-5 space-y-6 fade-in pb-24">
-            <!-- 歡迎卡 -->
             <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white card-shadow">
                 <h2 class="text-3xl font-bold mb-2">旅途愉快！</h2>
                 <p class="opacity-90 text-lg">今天想探索哪裡？</p>
@@ -87,18 +77,14 @@
                 </div>
             </div>
 
-            <!-- 實用旅遊連結 -->
             <div>
                 <h3 class="font-bold text-xl text-gray-700 mb-3 ml-1">🔗 精選旅遊指南</h3>
-                <div class="grid grid-cols-1 gap-3" id="links-container">
-                    <!-- JS 生成 -->
-                </div>
+                <div class="grid grid-cols-1 gap-3" id="links-container"></div>
             </div>
         </div>
 
-        <!-- 2️⃣ 地圖 (Map) -->
+        <!-- 2️⃣ 地圖 -->
         <div id="view-map" class="hidden h-full flex flex-col relative fade-in">
-            <!-- 篩選丸子 -->
             <div class="absolute top-4 left-0 right-0 z-[1000] px-3">
                 <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 px-1">
                     <button onclick="filterMap('all')" class="map-filter px-5 py-2 bg-white shadow-lg rounded-full text-base border active-filter font-bold text-blue-600 ring-2 ring-blue-500">全部</button>
@@ -109,7 +95,6 @@
                 </div>
             </div>
             <div id="map" class="bg-gray-200"></div>
-            <!-- 地點資訊卡 -->
             <div id="map-card" class="absolute bottom-6 left-4 right-4 bg-white p-5 rounded-2xl shadow-2xl z-[1000] hidden transform translate-y-full transition-transform duration-300">
                 <div class="flex justify-between items-start mb-2">
                     <div>
@@ -130,29 +115,22 @@
             </div>
         </div>
 
-        <!-- 3️⃣ 宅力/探索 (Explore) -->
+        <!-- 3️⃣ 探索 -->
         <div id="view-explore" class="hidden p-5 space-y-4 fade-in pb-24">
             <h2 class="text-2xl font-bold text-gray-800">🔍 區域與分類</h2>
-            <!-- 搜尋框 -->
             <div class="relative">
                 <input type="text" id="search-input" placeholder="搜尋 鋼彈、拉麵..." class="w-full p-4 pl-12 rounded-xl border-none shadow-sm bg-white text-lg">
                 <span class="absolute left-4 top-4 text-gray-400 text-xl">🔍</span>
             </div>
-            
-            <!-- 動漫專區開關 -->
             <div class="flex gap-2">
                 <button onclick="filterExplore('toy')" class="flex-1 bg-purple-100 text-purple-900 py-3 rounded-xl font-bold text-lg border border-purple-200">🤖 動漫/模型</button>
                 <button onclick="filterExplore('food')" class="flex-1 bg-orange-100 text-orange-900 py-3 rounded-xl font-bold text-lg border border-orange-200">🍜 必吃美食</button>
             </div>
-
-            <div id="explore-list" class="space-y-4 mt-2">
-                <!-- JS 生成 -->
-            </div>
+            <div id="explore-list" class="space-y-4 mt-2"></div>
         </div>
 
-        <!-- 4️⃣ 記帳/匯率 (Money) -->
+        <!-- 4️⃣ 記帳 -->
         <div id="view-money" class="hidden p-5 space-y-6 fade-in pb-24">
-            <!-- 匯率計算 -->
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
                 <h3 class="font-bold text-gray-500 mb-2">🇯🇵 匯率試算 (0.22)</h3>
                 <div class="flex items-center gap-3">
@@ -168,24 +146,22 @@
                 </div>
             </div>
 
-            <!-- 記帳表單 -->
             <div class="bg-white p-5 rounded-2xl shadow-lg border border-blue-100 relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-2 h-full bg-blue-500"></div>
                 <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
                     📝 新增一筆花費
                 </h3>
                 
-                <!-- Google Sheet URL 設定 (初次使用顯示) -->
+                <!-- Google Sheet URL 設定 -->
                 <div id="sheet-setup-box" class="mb-4 p-3 bg-yellow-50 text-yellow-800 text-sm rounded-lg hidden">
-                    <p class="font-bold mb-1">⚠️ 尚未設定 Google 試算表連結</p>
-                    <input type="text" id="sheet-url-input" placeholder="貼上您的 Apps Script URL" class="w-full p-2 border rounded mb-2">
-                    <button onclick="saveSheetUrl()" class="bg-yellow-500 text-white px-3 py-1 rounded font-bold w-full">儲存設定</button>
-                    <p class="text-xs mt-1 text-gray-500">*設定後才能同步資料到雲端</p>
+                    <p class="font-bold mb-1">⚠️ 設定連結</p>
+                    <input type="text" id="sheet-url-input" placeholder="Apps Script URL" class="w-full p-2 border rounded mb-2">
+                    <button onclick="saveSheetUrl()" class="bg-yellow-500 text-white px-3 py-1 rounded font-bold w-full">更新連結</button>
                 </div>
 
                 <div class="space-y-3">
                     <input type="date" id="expense-date" class="input-field">
-                    <input type="text" id="expense-item" placeholder="品項 / 地點 (例如：午餐、鋼彈模型)" class="input-field">
+                    <input type="text" id="expense-item" placeholder="品項 / 地點" class="input-field">
                     <input type="number" id="expense-amount" placeholder="金額 (日幣 ¥)" class="input-field">
                     
                     <button onclick="addExpense()" class="w-full bg-blue-600 text-white py-4 rounded-xl text-xl font-bold shadow-md hover:bg-blue-700 active:scale-95 transition">
@@ -194,15 +170,13 @@
                 </div>
             </div>
 
-            <!-- 今日花費列表 -->
             <div>
                 <div class="flex justify-between items-end mb-3">
                     <h3 class="font-bold text-xl text-gray-700">今日花費</h3>
                     <span class="text-2xl font-bold text-blue-600">¥ <span id="total-amount">0</span></span>
                 </div>
-                <div id="expense-list" class="space-y-2">
-                    <!-- JS 生成 -->
-                </div>
+                <div id="expense-list" class="space-y-2"></div>
+                
                 <div class="grid grid-cols-2 gap-3 mt-4">
                     <button id="sync-btn" onclick="syncToGoogleSheet()" class="bg-green-500 text-white py-3 rounded-xl font-bold shadow opacity-50 cursor-not-allowed" disabled>
                         ☁️ 同步上傳
@@ -211,13 +185,12 @@
                         📋 瀏覽紀錄
                     </button>
                 </div>
-                <button onclick="toggleSetupBox()" class="text-xs text-gray-400 mt-2 w-full text-center underline">設定 Google 試算表連結</button>
+                <button onclick="toggleSetupBox()" class="text-xs text-gray-400 mt-2 w-full text-center underline">檢查連結設定</button>
             </div>
         </div>
 
-        <!-- 5️⃣ 工具 (Tools) -->
+        <!-- 5️⃣ 工具 -->
         <div id="view-tools" class="hidden p-5 space-y-6 fade-in pb-24">
-            <!-- 翻譯模擬 -->
             <div class="bg-white p-5 rounded-2xl shadow-sm">
                 <h3 class="font-bold text-gray-700 mb-3">🗣️ 翻譯小幫手</h3>
                 <div class="flex gap-2 mb-3">
@@ -232,18 +205,15 @@
                 </div>
             </div>
 
-            <!-- 關鍵字快搜 -->
             <div>
-                <h3 class="font-bold text-xl text-gray-700 mb-3">🇯🇵 實用關鍵字 (點擊搜尋圖片)</h3>
-                <div class="grid grid-cols-2 gap-3" id="keywords-list">
-                    <!-- JS 生成 -->
-                </div>
+                <h3 class="font-bold text-xl text-gray-700 mb-3">🇯🇵 實用關鍵字</h3>
+                <div class="grid grid-cols-2 gap-3" id="keywords-list"></div>
             </div>
         </div>
 
     </main>
 
-    <!-- 雲端紀錄 Modal -->
+    <!-- Modal -->
     <div id="cloud-history-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center modal-overlay p-4">
         <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
             <div class="bg-indigo-600 p-4 text-white flex justify-between items-center">
@@ -256,7 +226,7 @@
                 </div>
             </div>
             <div class="p-3 border-t bg-white text-center text-sm text-gray-500">
-                資料來源: 您的 Google Sheet
+                若無資料，請確認 Apps Script 權限與代碼
             </div>
         </div>
     </div>
@@ -280,7 +250,7 @@
             <span class="text-xs">記帳</span>
         </button>
         <button onclick="switchTab('tools')" class="nav-item flex flex-col items-center p-2 w-full transition">
-            <svg class="w-7 h-7 mb-1" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39.96c-.22-.08-.47 0 .59-.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/></svg>
+            <svg class="w-7 h-7 mb-1" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0 .59-.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/></svg>
             <span class="text-xs">工具</span>
         </button>
     </nav>
@@ -288,17 +258,12 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        // --- 資料設定 (Data) ---
-        // 包含先前的景點 + 新增的動漫/購物點
         const places = [
-            // 原有的 (部分)
             { id: 1, name: "大通公園", type: "spot", area: "札幌中心", lat: 43.0611, lng: 141.3564, note: "札幌地標電視塔", icon: "🗼", rating: 4.5 },
             { id: 2, name: "狸小路商店街", type: "shopping", area: "狸小路", lat: 43.0567, lng: 141.3542, note: "藥妝、唐吉訶德、伴手禮", icon: "🛍️", rating: 4.2 },
             { id: 3, name: "二條市場", type: "food", area: "札幌中心", lat: 43.0583, lng: 141.3582, note: "海鮮丼飯早餐首選", icon: "🦀", rating: 4.1 },
             { id: 4, name: "小樽運河", type: "spot", area: "小樽", lat: 43.1976, lng: 141.0028, note: "浪漫夜景必拍", icon: "🛶", rating: 4.4 },
             { id: 26, name: "三井 OUTLET", type: "shopping", area: "北廣島", lat: 42.9698, lng: 141.4627, note: "名牌折扣，好逛好買", icon: "🏬", rating: 4.1 },
-            
-            // 新增：動漫/模型 (Toy)
             { id: 101, name: "Animate 札幌店", type: "toy", area: "札幌中心", lat: 43.0605, lng: 141.3535, note: "女性向周邊多，漫畫齊全", icon: "📘", rating: 4.3 },
             { id: 102, name: "Mandarake 札幌店", type: "toy", area: "狸小路", lat: 43.0565, lng: 141.3525, note: "二手絕版品挖寶聖地 (大通大樓內)", icon: "🏺", rating: 4.0 },
             { id: 103, name: "駿河屋 札幌店", type: "toy", area: "札幌車站", lat: 43.0675, lng: 141.3510, note: "二手模型公仔價格漂亮", icon: "📦", rating: 3.9 },
@@ -306,8 +271,6 @@
             { id: 105, name: "Yodobashi Camera", type: "toy", area: "札幌車站", lat: 43.0690, lng: 141.3480, note: "3F 玩具模型區極大，鋼彈齊全，免稅", icon: "🤖", rating: 4.5 },
             { id: 106, name: "Bic Camera 札幌店", type: "toy", area: "札幌車站", lat: 43.0670, lng: 141.3530, note: "電器與玩具模型，免稅方便", icon: "📷", rating: 4.2 },
             { id: 107, name: "VOLKS 札幌店", type: "toy", area: "札幌中心", lat: 43.0600, lng: 141.3530, note: "IKEUCHI GATE 內，專業模型工具與人偶", icon: "🛠️", rating: 4.4 },
-
-            // 新增：購物 (Shopping)
             { id: 201, name: "札幌 PARCO", type: "shopping", area: "札幌中心", lat: 43.0595, lng: 141.3530, note: "年輕潮流品牌，Jump Shop 在這", icon: "👗", rating: 4.1 },
             { id: 202, name: "Stellar Place", type: "shopping", area: "札幌車站", lat: 43.0685, lng: 141.3505, note: "與車站共構，超大購物中心", icon: "🏬", rating: 4.3 },
         ];
@@ -330,12 +293,16 @@
             { word: "謝謝", jp: "ありがとう (Arigatou)" }
         ];
 
-        // --- 變數與初始化 ---
         let map;
         let markers = [];
         let expenseList = JSON.parse(localStorage.getItem('hokkaido_expenses')) || [];
-        // 設定已知的 GAS 連結為預設值
-        let sheetUrl = localStorage.getItem('hokkaido_sheet_url') || "https://script.google.com/macros/s/AKfycbyGdnxRVEY4_lpRozTYUqmLKP8634VmE_LRpSKsMoTm4H4ATD8b6Bs30PLrpQF4tbE/exec";
+        
+        // 優先使用您提供的正確 URL
+        const DEFAULT_URL = "https://script.google.com/macros/s/AKfycbyGdnxRVEY4_lpRozTYUqmLKP8634VmE_LRpSKsMoTm4H4ATD8b6Bs30PLrpQF4tbE/exec";
+        // 只有當使用者「手動」更新過，才使用 localStorage，否則強制使用正確的 DEFAULT_URL
+        let sheetUrl = localStorage.getItem('hokkaido_sheet_url_custom') === 'true' 
+            ? (localStorage.getItem('hokkaido_sheet_url') || DEFAULT_URL) 
+            : DEFAULT_URL;
 
         document.addEventListener('DOMContentLoaded', () => {
             renderLinks();
@@ -344,12 +311,11 @@
             renderExpenseList();
             initMap();
             
-            // 預設日期為今天
             document.getElementById('expense-date').valueAsDate = new Date();
             
-            if(!sheetUrl) document.getElementById('sheet-setup-box').classList.remove('hidden');
+            // 將目前的 URL 填入設定框，方便使用者查看
+            document.getElementById('sheet-url-input').value = sheetUrl;
 
-            // 搜尋監聽
             document.getElementById('search-input').addEventListener('input', (e) => {
                 const term = e.target.value.toLowerCase();
                 const filtered = places.filter(p => 
@@ -361,21 +327,17 @@
             });
         });
 
-        // --- 核心導航邏輯 ---
         function switchTab(tabName, filterType = null) {
             ['home', 'map', 'explore', 'money', 'tools'].forEach(t => {
                 document.getElementById(`view-${t}`).classList.add('hidden');
-                document.getElementById(`view-${t}`).classList.remove('flex'); // 確保 flex layout 被移除
+                document.getElementById(`view-${t}`).classList.remove('flex');
             });
             
-            // 顯示目標 tab
             const target = document.getElementById(`view-${tabName}`);
             target.classList.remove('hidden');
-            if (tabName === 'map') target.classList.add('flex'); // Map 需要 flex
+            if (tabName === 'map') target.classList.add('flex');
             
-            // 更新底部導航狀態
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            // 簡單對應 index: home=0, map=1, explore=2, money=3, tools=4
             const navMap = {'home':0, 'map':1, 'explore':2, 'money':3, 'tools':4};
             document.querySelectorAll('.nav-item')[navMap[tabName]].classList.add('active');
 
@@ -390,7 +352,6 @@
             }
         }
 
-        // --- 功能 1 & 2 & 5: 渲染連結與關鍵字 ---
         function renderLinks() {
             const container = document.getElementById('links-container');
             container.innerHTML = webLinks.map(link => `
@@ -415,10 +376,9 @@
             `).join('');
         }
 
-        // --- 功能 4: 記帳與 Google Sheet 邏輯 ---
         function calculateRate() {
             const jpy = parseFloat(document.getElementById('jpy-input').value) || 0;
-            const rate = 0.22; // 固定匯率，實際可接 API
+            const rate = 0.22;
             document.getElementById('twd-output').value = Math.round(jpy * rate);
         }
 
@@ -430,8 +390,9 @@
             const url = document.getElementById('sheet-url-input').value;
             if(url) {
                 localStorage.setItem('hokkaido_sheet_url', url);
+                localStorage.setItem('hokkaido_sheet_url_custom', 'true'); // 標記為使用者自訂
                 sheetUrl = url;
-                alert('連結已儲存！現在可以同步資料了。');
+                alert('連結已更新！');
                 toggleSetupBox();
             }
         }
@@ -454,10 +415,9 @@
                 synced: false
             };
 
-            expenseList.unshift(record); // 加到最前面
+            expenseList.unshift(record);
             localStorage.setItem('hokkaido_expenses', JSON.stringify(expenseList));
             
-            // 清空輸入
             document.getElementById('expense-item').value = '';
             document.getElementById('expense-amount').value = '';
             
@@ -466,7 +426,6 @@
         }
 
         function addToExpenseFromCard() {
-            // 從地圖卡片快速記帳
             const title = document.getElementById('card-title').innerText;
             document.getElementById('expense-item').value = title;
             switchTab('money');
@@ -494,7 +453,6 @@
 
             document.getElementById('total-amount').innerText = total.toLocaleString();
             
-            // 更新同步按鈕狀態
             const syncBtn = document.getElementById('sync-btn');
             if (unsyncedCount > 0 && sheetUrl) {
                 syncBtn.disabled = false;
@@ -507,7 +465,6 @@
             }
         }
 
-        // *** Google Sheet 同步核心 (POST) ***
         function syncToGoogleSheet() {
             if (!sheetUrl) { alert('請先設定 Google Apps Script URL'); return; }
 
@@ -524,10 +481,12 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(unsyncedData)
             }).then(() => {
+                // 因為 no-cors 無法得知詳細錯誤，若請求成功發出即視為成功
+                // 如果後端 sheet 名稱錯誤，這裡還是會顯示成功，但 sheet 不會有資料
                 expenseList.forEach(ex => ex.synced = true);
                 localStorage.setItem('hokkaido_expenses', JSON.stringify(expenseList));
                 renderExpenseList();
-                alert('資料已發送至 Google 試算表！');
+                alert('資料已傳送！\n若試算表沒出現資料，請檢查 Sheet 名稱是否為 "Expenses"');
             }).catch(err => {
                 console.error(err);
                 alert('同步失敗，請檢查網路或 URL');
@@ -536,7 +495,6 @@
             });
         }
 
-        // *** 瀏覽雲端紀錄 (GET) ***
         function fetchCloudRecords() {
             if (!sheetUrl) { alert('請先設定 Google Apps Script URL'); return; }
             
@@ -547,7 +505,10 @@
             content.innerHTML = '<div class="flex justify-center py-10"><div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div></div>';
             
             fetch(sheetUrl)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.json();
+                })
                 .then(data => {
                     if (!data || data.length === 0) {
                         content.innerHTML = '<div class="text-center text-gray-500 py-10">雲端試算表是空的</div>';
@@ -558,7 +519,6 @@
                     const html = data.map(row => {
                         const amt = parseInt(row.amount) || 0;
                         total += amt;
-                        // 處理日期格式 (GAS 回傳通常是 ISO 或字串)
                         let dateStr = row.date;
                         if(dateStr.includes('T')) dateStr = dateStr.split('T')[0];
                         
@@ -583,7 +543,7 @@
                     content.innerHTML = `
                         <div class="text-center text-red-500 py-6">
                             讀取失敗<br>
-                            <span class="text-xs text-gray-500 block mt-2">請確認您的 Google Apps Script 已更新程式碼以支援 "doGet" 讀取功能。</span>
+                            <span class="text-xs text-gray-500 block mt-2">請確認您的 Apps Script 已更新程式碼，並「部署為新版本」。</span>
                         </div>
                     `;
                 });
@@ -593,7 +553,6 @@
             document.getElementById('cloud-history-modal').classList.add('hidden');
         }
 
-        // --- 功能 1 & 2: 地圖與探索邏輯 ---
         function initMap() {
             map = L.map('map').setView([43.0618, 141.3545], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
