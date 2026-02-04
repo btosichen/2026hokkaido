@@ -48,6 +48,12 @@
             font-size: 1.1rem; outline: none; transition: all 0.2s;
         }
         .input-field:focus { border-color: #3b82f6; ring: 2px solid #93c5fd; }
+
+        /* 模態視窗 (Modal) */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -197,9 +203,14 @@
                 <div id="expense-list" class="space-y-2">
                     <!-- JS 生成 -->
                 </div>
-                <button id="sync-btn" onclick="syncToGoogleSheet()" class="w-full mt-4 bg-green-500 text-white py-3 rounded-xl font-bold shadow opacity-50 cursor-not-allowed" disabled>
-                    ☁️ 同步至 Google 試算表 (0筆待傳)
-                </button>
+                <div class="grid grid-cols-2 gap-3 mt-4">
+                    <button id="sync-btn" onclick="syncToGoogleSheet()" class="bg-green-500 text-white py-3 rounded-xl font-bold shadow opacity-50 cursor-not-allowed" disabled>
+                        ☁️ 同步上傳
+                    </button>
+                    <button onclick="fetchCloudRecords()" class="bg-indigo-500 text-white py-3 rounded-xl font-bold shadow hover:bg-indigo-600">
+                        📋 瀏覽紀錄
+                    </button>
+                </div>
                 <button onclick="toggleSetupBox()" class="text-xs text-gray-400 mt-2 w-full text-center underline">設定 Google 試算表連結</button>
             </div>
         </div>
@@ -232,6 +243,24 @@
 
     </main>
 
+    <!-- 雲端紀錄 Modal -->
+    <div id="cloud-history-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center modal-overlay p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+            <div class="bg-indigo-600 p-4 text-white flex justify-between items-center">
+                <h3 class="font-bold text-xl">☁️ Google 試算表紀錄</h3>
+                <button onclick="closeCloudHistory()" class="text-white text-2xl px-2">✕</button>
+            </div>
+            <div id="cloud-history-content" class="p-4 overflow-y-auto flex-1 bg-gray-50">
+                <div class="flex justify-center py-10">
+                    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+                </div>
+            </div>
+            <div class="p-3 border-t bg-white text-center text-sm text-gray-500">
+                資料來源: 您的 Google Sheet
+            </div>
+        </div>
+    </div>
+
     <!-- 底部導航 -->
     <nav class="bg-white border-t flex justify-around items-center px-1 py-2 pb-safe fixed bottom-0 w-full z-30 shadow-2xl text-gray-400">
         <button onclick="switchTab('home')" class="nav-item active flex flex-col items-center p-2 w-full transition">
@@ -251,7 +280,7 @@
             <span class="text-xs">記帳</span>
         </button>
         <button onclick="switchTab('tools')" class="nav-item flex flex-col items-center p-2 w-full transition">
-            <svg class="w-7 h-7 mb-1" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0 .59-.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/></svg>
+            <svg class="w-7 h-7 mb-1" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39.96c-.22-.08-.47 0 .59-.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/></svg>
             <span class="text-xs">工具</span>
         </button>
     </nav>
@@ -470,7 +499,7 @@
             if (unsyncedCount > 0 && sheetUrl) {
                 syncBtn.disabled = false;
                 syncBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                syncBtn.innerText = `☁️ 同步至 Google 試算表 (${unsyncedCount}筆待傳)`;
+                syncBtn.innerText = `☁️ 同步上傳 (${unsyncedCount}筆)`;
             } else {
                 syncBtn.disabled = true;
                 syncBtn.classList.add('opacity-50', 'cursor-not-allowed');
@@ -478,7 +507,7 @@
             }
         }
 
-        // *** Google Sheet 同步核心 ***
+        // *** Google Sheet 同步核心 (POST) ***
         function syncToGoogleSheet() {
             if (!sheetUrl) { alert('請先設定 Google Apps Script URL'); return; }
 
@@ -489,16 +518,12 @@
             btn.innerText = "⏳ 上傳中...";
             btn.disabled = true;
 
-            // 由於跨域問題 (CORS)，通常使用 no-cors mode 或 jsonp
-            // 這裡使用標準 fetch POST，後端 GAS 需設定正確 header
             fetch(sheetUrl, {
                 method: 'POST',
-                mode: 'no-cors', // 重要：避免 CORS 錯誤，但無法讀取回傳值
+                mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(unsyncedData)
             }).then(() => {
-                // 因 no-cors 無法確認成功，我們假設請求發出即成功 (實務上的妥協)
-                // 更新本地狀態
                 expenseList.forEach(ex => ex.synced = true);
                 localStorage.setItem('hokkaido_expenses', JSON.stringify(expenseList));
                 renderExpenseList();
@@ -509,6 +534,63 @@
                 btn.innerText = "同步失敗 (重試)";
                 btn.disabled = false;
             });
+        }
+
+        // *** 瀏覽雲端紀錄 (GET) ***
+        function fetchCloudRecords() {
+            if (!sheetUrl) { alert('請先設定 Google Apps Script URL'); return; }
+            
+            const modal = document.getElementById('cloud-history-modal');
+            const content = document.getElementById('cloud-history-content');
+            
+            modal.classList.remove('hidden');
+            content.innerHTML = '<div class="flex justify-center py-10"><div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div></div>';
+            
+            fetch(sheetUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data || data.length === 0) {
+                        content.innerHTML = '<div class="text-center text-gray-500 py-10">雲端試算表是空的</div>';
+                        return;
+                    }
+                    
+                    let total = 0;
+                    const html = data.map(row => {
+                        const amt = parseInt(row.amount) || 0;
+                        total += amt;
+                        // 處理日期格式 (GAS 回傳通常是 ISO 或字串)
+                        let dateStr = row.date;
+                        if(dateStr.includes('T')) dateStr = dateStr.split('T')[0];
+                        
+                        return `
+                            <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-200 mb-2 shadow-sm">
+                                <div>
+                                    <div class="font-bold text-gray-800">${row.item}</div>
+                                    <div class="text-xs text-gray-500">${dateStr}</div>
+                                </div>
+                                <div class="font-bold text-indigo-600">¥${amt.toLocaleString()}</div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    content.innerHTML = `
+                        <div class="text-right mb-4 font-bold text-gray-700">總計: ¥${total.toLocaleString()}</div>
+                        ${html}
+                    `;
+                })
+                .catch(err => {
+                    console.error(err);
+                    content.innerHTML = `
+                        <div class="text-center text-red-500 py-6">
+                            讀取失敗<br>
+                            <span class="text-xs text-gray-500 block mt-2">請確認您的 Google Apps Script 已更新程式碼以支援 "doGet" 讀取功能。</span>
+                        </div>
+                    `;
+                });
+        }
+        
+        function closeCloudHistory() {
+            document.getElementById('cloud-history-modal').classList.add('hidden');
         }
 
         // --- 功能 1 & 2: 地圖與探索邏輯 ---
