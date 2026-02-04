@@ -52,6 +52,9 @@
         .tag-eat { @apply bg-orange-100 text-orange-700 border-orange-200; }
         .tag-buy { @apply bg-pink-100 text-pink-700 border-pink-200; }
         .tag-snap { @apply bg-blue-100 text-blue-700 border-blue-200; }
+        
+        /* 語音按鈕效果 */
+        .phrase-card:active { transform: scale(0.98); background-color: #eff6ff; }
     </style>
 </head>
 <body class="text-gray-800">
@@ -134,11 +137,10 @@
             <div id="explore-list" class="space-y-4 mt-2"></div>
         </div>
 
-        <!-- 4️⃣ 行程 (New Tab with Map) -->
+        <!-- 4️⃣ 行程 -->
         <div id="view-itinerary" class="hidden p-5 space-y-6 fade-in pb-24">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">🗓️ 5 天行程攻略</h2>
             
-            <!-- 行程地圖顯示區 -->
             <div class="mb-6 bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100">
                 <div class="bg-blue-50 p-3 border-b border-blue-100 flex justify-between items-center">
                     <h3 class="font-bold text-blue-800 flex items-center gap-2">
@@ -153,7 +155,6 @@
                          style="min-height: 200px; background-color: #f0f0f0;"
                          onerror="this.style.display='none'; document.getElementById('map-link-fallback').classList.remove('hidden');">
                     
-                    <!-- 圖片載入失敗時的備用連結 -->
                     <div id="map-link-fallback" class="hidden p-8 text-center bg-gray-50">
                         <p class="mb-2 text-gray-500">圖片暫時無法顯示</p>
                         <a href="https://github.com/btosichen/2026hokkaido/blob/19be6130cefe0cc97d19ab3ea7b01727e9875c1e/Gemini_Generated_Image_rcqrv3rcqrv3rcqr.PNG" 
@@ -213,7 +214,12 @@
             <div>
                 <div class="flex justify-between items-end mb-3">
                     <h3 class="font-bold text-xl text-gray-700">今日花費</h3>
-                    <span class="text-2xl font-bold text-blue-600">¥ <span id="total-amount">0</span></span>
+                    <div class="flex items-center gap-2">
+                        <button onclick="clearOldRecords()" class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-300 transition">
+                            🗑️ 清除舊紀錄
+                        </button>
+                        <span class="text-2xl font-bold text-blue-600">¥ <span id="total-amount">0</span></span>
+                    </div>
                 </div>
                 <div id="expense-list" class="space-y-2"></div>
                 
@@ -229,25 +235,13 @@
             </div>
         </div>
 
-        <!-- 6️⃣ 工具 -->
+        <!-- 6️⃣ 工具 (Updated) -->
         <div id="view-tools" class="hidden p-5 space-y-6 fade-in pb-24">
-            <div class="bg-white p-5 rounded-2xl shadow-sm">
-                <h3 class="font-bold text-gray-700 mb-3">🗣️ 翻譯小幫手</h3>
-                <div class="flex gap-2 mb-3">
-                    <button id="btn-cn-jp" onclick="setTransMode('cn_jp')" class="flex-1 py-2 bg-blue-600 text-white rounded-lg font-bold shadow-md transition">中 ➞ 日</button>
-                    <button id="btn-jp-cn" onclick="setTransMode('jp_cn')" class="flex-1 py-2 bg-gray-100 text-gray-600 rounded-lg transition">日 ➞ 中</button>
-                </div>
-                <textarea id="trans-input" placeholder="請輸入中文..." class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 h-24 mb-2 text-lg"></textarea>
-                <div class="flex gap-2">
-                    <button onclick="alert('模擬翻譯功能：\n請使用 Google 翻譯 App 獲得最佳體驗')" class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-bold shadow hover:bg-blue-700">翻譯</button>
-                    <button class="w-14 bg-gray-200 rounded-xl flex items-center justify-center text-2xl">🎤</button>
-                    <button class="w-14 bg-gray-200 rounded-xl flex items-center justify-center text-2xl">📷</button>
-                </div>
-            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">🇯🇵 北海道生存指指通</h2>
+            <p class="text-sm text-gray-500 mb-4">點擊卡片可播放/放大文字</p>
 
-            <div>
-                <h3 class="font-bold text-xl text-gray-700 mb-3">🇯🇵 實用關鍵字</h3>
-                <div class="grid grid-cols-2 gap-3" id="keywords-list"></div>
+            <div class="space-y-5" id="phrase-book">
+                <!-- JS 動態生成 -->
             </div>
         </div>
 
@@ -294,7 +288,7 @@
             <span class="text-xs">記帳</span>
         </button>
         <button onclick="switchTab('tools')" class="nav-item flex flex-col items-center p-2 w-full transition">
-            <svg class="w-7 h-7 mb-1" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/></svg>
+            <svg class="w-7 h-7 mb-1" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/></svg>
             <span class="text-xs">工具</span>
         </button>
     </nav>
@@ -302,15 +296,13 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
+        // --- 1. 資料庫 (Places & Itinerary) ---
         const places = [
-            // --- 既有景點 ---
             { id: 1, name: "大通公園", type: "spot", area: "札幌中心", lat: 43.0611, lng: 141.3564, note: "札幌地標電視塔", icon: "🗼", rating: 4.5 },
             { id: 2, name: "狸小路商店街", type: "shopping", area: "狸小路", lat: 43.0567, lng: 141.3542, note: "藥妝、唐吉訶德、伴手禮", icon: "🛍️", rating: 4.2 },
             { id: 3, name: "二條市場", type: "food", area: "札幌中心", lat: 43.0583, lng: 141.3582, note: "海鮮丼飯早餐首選", icon: "🦀", rating: 4.1 },
             { id: 4, name: "小樽運河", type: "spot", area: "小樽", lat: 43.1976, lng: 141.0028, note: "浪漫夜景必拍", icon: "🛶", rating: 4.4 },
             { id: 26, name: "三井 OUTLET", type: "shopping", area: "北廣島", lat: 42.9698, lng: 141.4627, note: "名牌折扣，好逛好買", icon: "🏬", rating: 4.1 },
-            
-            // --- 美食 ---
             { id: 301, name: "LeTAO 本店", type: "food", area: "小樽", lat: 43.1912, lng: 141.0065, note: "必吃雙層乳酪蛋糕 (Double Fromage)", icon: "🍰", rating: 4.8 },
             { id: 302, name: "北菓樓 小樽本館", type: "food", area: "小樽", lat: 43.1930, lng: 141.0082, note: "「夢不思議」大泡芙、妖精之森年輪蛋糕", icon: "🍦", rating: 4.6 },
             { id: 303, name: "若雞時代 Naruto", type: "food", area: "小樽", lat: 43.1956, lng: 140.9942, note: "小樽名物：超大炸半雞定食", icon: "🍗", rating: 4.4 },
@@ -318,8 +310,6 @@
             { id: 305, name: "札幌啤酒園", type: "food", area: "札幌東區", lat: 43.0712, lng: 141.3695, note: "成吉思汗烤羊肉吃到飽，啤酒好喝", icon: "🥩", rating: 4.3 },
             { id: 306, name: "六花亭 札幌本店", type: "shopping", area: "札幌車站", lat: 43.0635, lng: 141.3498, note: "必買：蘭姆葡萄奶油夾心餅乾", icon: "🍪", rating: 4.7 },
             { id: 307, name: "Wakasaimo 本舖", type: "food", area: "洞爺湖", lat: 42.5562, lng: 140.8190, note: "洞爺名產：假裝是地瓜的豆沙甜點", icon: "🍠", rating: 4.0 },
-
-            // --- 動漫 ---
             { id: 401, name: "越後屋 (洞爺湖木刀)", type: "toy", area: "洞爺湖", lat: 42.5663, lng: 140.8260, note: "《銀魂》坂田銀時愛用木刀，可刻字", icon: "🗡️", rating: 4.5 },
             { id: 402, name: "雪未來 Sky Town", type: "toy", area: "新千歲機場", lat: 42.7875, lng: 141.6814, note: "初音迷聖地，北海道限定 Snow Miku", icon: "❄️", rating: 4.7 },
             { id: 403, name: "小樽音樂盒堂", type: "spot", area: "小樽", lat: 43.1906, lng: 141.0076, note: "門口蒸氣鐘是地標，也是《黃金神威》場景", icon: "🎼", rating: 4.6 },
@@ -329,13 +319,10 @@
             { id: 102, name: "Mandarake 札幌店", type: "toy", area: "狸小路", lat: 43.0565, lng: 141.3525, note: "二手絕版品挖寶", icon: "🏺", rating: 4.0 },
             { id: 103, name: "駿河屋 札幌店", type: "toy", area: "札幌車站", lat: 43.0675, lng: 141.3510, note: "二手模型公仔", icon: "📦", rating: 3.9 },
             { id: 105, name: "Yodobashi Camera", type: "toy", area: "札幌車站", lat: 43.0690, lng: 141.3480, note: "3F 模型區極大，鋼彈齊全", icon: "🤖", rating: 4.5 },
-            
-            // --- 其他 ---
             { id: 201, name: "札幌 PARCO", type: "shopping", area: "札幌中心", lat: 43.0595, lng: 141.3530, note: "Jump Shop 在這 (海賊王/排球少年)", icon: "👗", rating: 4.1 },
             { id: 202, name: "Stellar Place", type: "shopping", area: "札幌車站", lat: 43.0685, lng: 141.3505, note: "與車站共構，超大購物中心", icon: "🏬", rating: 4.3 },
         ];
 
-        // 5天詳細行程資料
         const fullItinerary = [
             {
                 day: "Day 1",
@@ -389,7 +376,7 @@
                 day: "Day 5",
                 title: "海鮮美食饗宴",
                 desc: "函館朝市體驗 ➔ 滿載而歸",
-                hotel: null, // Day 5 返家
+                hotel: null, 
                 spots: [
                     { name: "函館傳統朝市", url: "https://www.google.com/maps/search/?api=1&query=Hakodate+Morning+Market", type: "eat", note: "必吃：現釣烏賊刺身 (在那邊釣那邊吃)、海鮮丼飯。<br>必買：干貝糖、昆布。" },
                     { name: "函館/千歲機場", url: "https://www.google.com/maps/search/?api=1&query=New+Chitose+Airport", type: "buy", note: "必買：薯條三兄弟、Royce巧克力、北見薄荷油。<br>最後補貨機會！" }
@@ -404,15 +391,39 @@
             { title: "Funliday", desc: "狸小路行程規劃", url: "https://www.funliday.com/posts/tanukikoji/", icon: "📝" }
         ];
 
-        const keywords = [
-            { word: "廁所", jp: "トイレ (Toire)" },
-            { word: "結帳", jp: "お会計 (O-kaikei)" },
-            { word: "多少錢", jp: "いくら (Ikura)" },
-            { word: "免稅", jp: "免税 (Menzei)" },
-            { word: "推薦", jp: "おすすめ (Osusume)" },
-            { word: "外帶", jp: "テイクアウト (Take out)" },
-            { word: "不好意思", jp: "すみません (Sumimasen)" },
-            { word: "謝謝", jp: "ありがとう (Arigatou)" }
+        // --- 實用日語資料 ---
+        const phrases = [
+            {
+                category: "👋 基本問候",
+                items: [
+                    { cn: "早安", jp: "おはようございます", roma: "Ohayou gozaimasu" },
+                    { cn: "你好 / 午安", jp: "こんにちは", roma: "Konnichiwa" },
+                    { cn: "謝謝", jp: "ありがとうございます", roma: "Arigatou gozaimasu" },
+                    { cn: "不好意思 / 對不起", jp: "すみません", roma: "Sumimasen" }
+                ]
+            },
+            {
+                category: "🍛 餐廳點餐",
+                items: [
+                    { cn: "1 位", jp: "ひとりです", roma: "Hitori desu" },
+                    { cn: "2 位", jp: "ふたりです", roma: "Futari desu" },
+                    { cn: "4 位", jp: "よにんです", roma: "Yonin desu" },
+                    { cn: "我要點餐", jp: "注文お願いします", roma: "Chuumon onegaishimasu" },
+                    { cn: "我要這個", jp: "これをください", roma: "Kore o kudasai" },
+                    { cn: "我要一杯熱美式", jp: "ホットコーヒーをひとつ", roma: "Hotto ko-hi- o hitotsu" },
+                    { cn: "結帳", jp: "お会計お願いします", roma: "Okaikei onegaishimasu" },
+                    { cn: "很好吃", jp: "おいしいです", roma: "Oishii desu" }
+                ]
+            },
+            {
+                category: "🛍️ 購物 & 其他",
+                items: [
+                    { cn: "多少錢？", jp: "いくらですか？", roma: "Ikura desu ka" },
+                    { cn: "可以免稅嗎？", jp: "免税できますか？", roma: "Menzei dekimasu ka" },
+                    { cn: "請給我袋子", jp: "袋をください", roma: "Fukuro o kudasai" },
+                    { cn: "廁所在哪裡？", jp: "トイレはどこですか？", roma: "Toire wa doko desu ka" }
+                ]
+            }
         ];
 
         let map;
@@ -426,10 +437,10 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             renderLinks();
-            renderKeywords();
+            renderPhrases(); // Render new phrases
             renderExplore(places);
             renderExpenseList();
-            renderItineraryDetails(); // 新增渲染行程
+            renderItineraryDetails(); 
             initMap();
             
             document.getElementById('expense-date').valueAsDate = new Date();
@@ -458,7 +469,6 @@
             
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             
-            // Update active state based on tab name
             const navItems = document.querySelectorAll('.nav-item');
             if(tabName === 'home') navItems[0].classList.add('active');
             else if(tabName === 'map') navItems[1].classList.add('active');
@@ -478,7 +488,7 @@
             }
         }
 
-        // --- 新增：渲染詳細行程 ---
+        // --- 渲染行程 ---
         function renderItineraryDetails() {
             const container = document.getElementById('itinerary-container');
             container.innerHTML = fullItinerary.map((day, index) => {
@@ -529,25 +539,29 @@
             }).join('');
         }
 
-        // --- 新增：翻譯模式切換 ---
-        function setTransMode(mode) {
-            const input = document.getElementById('trans-input');
-            const btnCn = document.getElementById('btn-cn-jp');
-            const btnJp = document.getElementById('btn-jp-cn');
+        // --- 渲染日語金句 ---
+        function renderPhrases() {
+            const container = document.getElementById('phrase-book');
+            container.innerHTML = phrases.map(cat => `
+                <div>
+                    <h3 class="font-bold text-gray-700 mb-3 ml-1 text-lg">${cat.category}</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        ${cat.items.map(p => `
+                            <div class="phrase-card bg-white p-3 rounded-xl border border-gray-200 shadow-sm cursor-pointer transition" onclick="speakPhrase('${p.jp}')">
+                                <div class="font-bold text-blue-700 text-lg mb-1">${p.cn}</div>
+                                <div class="text-xl font-bold text-gray-800 mb-1">${p.jp}</div>
+                                <div class="text-xs text-gray-400">${p.roma}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
 
-            if(mode === 'cn_jp') {
-                input.placeholder = "請輸入中文...";
-                btnCn.classList.add('bg-blue-600', 'text-white', 'shadow-md');
-                btnCn.classList.remove('bg-gray-100', 'text-gray-600');
-                btnJp.classList.add('bg-gray-100', 'text-gray-600');
-                btnJp.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
-            } else {
-                input.placeholder = "請輸入日文...";
-                btnJp.classList.add('bg-blue-600', 'text-white', 'shadow-md');
-                btnJp.classList.remove('bg-gray-100', 'text-gray-600');
-                btnCn.classList.add('bg-gray-100', 'text-gray-600');
-                btnCn.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
-            }
+        function speakPhrase(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ja-JP';
+            speechSynthesis.speak(utterance);
         }
 
         function renderLinks() {
@@ -560,16 +574,6 @@
                         <p class="text-sm text-gray-500">${link.desc}</p>
                     </div>
                     <span class="text-gray-300">➜</span>
-                </a>
-            `).join('');
-        }
-
-        function renderKeywords() {
-            const container = document.getElementById('keywords-list');
-            container.innerHTML = keywords.map(k => `
-                <a href="https://www.google.com/search?tbm=isch&q=${k.jp}" target="_blank" class="bg-white p-3 rounded-xl shadow-sm border text-center active:bg-blue-50">
-                    <div class="text-lg font-bold text-gray-800">${k.word}</div>
-                    <div class="text-sm text-blue-600 mt-1">${k.jp}</div>
                 </a>
             `).join('');
         }
@@ -588,10 +592,32 @@
             const url = document.getElementById('sheet-url-input').value;
             if(url) {
                 localStorage.setItem('hokkaido_sheet_url', url);
-                localStorage.setItem('hokkaido_sheet_url_custom', 'true'); // 標記為使用者自訂
+                localStorage.setItem('hokkaido_sheet_url_custom', 'true'); 
                 sheetUrl = url;
                 alert('連結已更新！');
                 toggleSetupBox();
+            }
+        }
+
+        // --- 清除舊紀錄功能 ---
+        function clearOldRecords() {
+            if(!confirm("確定要清除「今天之前」的所有紀錄嗎？\n(已同步的資料不會從 Google 試算表刪除)")) return;
+
+            const today = new Date().toISOString().split('T')[0];
+            
+            // 過濾留下「今天及未來」的紀錄
+            const newExpenseList = expenseList.filter(item => item.date >= today);
+            
+            // 找出被刪除的數量 (僅供 debug 或提示)
+            const deletedCount = expenseList.length - newExpenseList.length;
+
+            if (deletedCount > 0) {
+                expenseList = newExpenseList;
+                localStorage.setItem('hokkaido_expenses', JSON.stringify(expenseList));
+                renderExpenseList();
+                alert(`已清除 ${deletedCount} 筆舊紀錄！`);
+            } else {
+                alert("沒有舊紀錄需要清除。");
             }
         }
 
@@ -679,8 +705,6 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(unsyncedData)
             }).then(() => {
-                // 因為 no-cors 無法得知詳細錯誤，若請求成功發出即視為成功
-                // 如果後端 sheet 名稱錯誤，這裡還是會顯示成功，但 sheet 不會有資料
                 expenseList.forEach(ex => ex.synced = true);
                 localStorage.setItem('hokkaido_expenses', JSON.stringify(expenseList));
                 renderExpenseList();
