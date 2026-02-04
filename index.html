@@ -47,6 +47,11 @@
             background-color: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(2px);
         }
+
+        /* 行程標籤樣式 */
+        .tag-eat { @apply bg-orange-100 text-orange-700 border-orange-200; }
+        .tag-buy { @apply bg-pink-100 text-pink-700 border-pink-200; }
+        .tag-snap { @apply bg-blue-100 text-blue-700 border-blue-200; }
     </style>
 </head>
 <body class="text-gray-800">
@@ -66,9 +71,9 @@
                 <h2 class="text-3xl font-bold mb-2">旅途愉快！</h2>
                 <p class="opacity-90 text-lg">今天想探索哪裡？</p>
                 <div class="mt-6 grid grid-cols-2 gap-3">
-                    <button onclick="switchTab('explore', 'toy')" class="bg-white/20 hover:bg-white/30 p-3 rounded-xl text-left transition border border-white/10">
-                        <span class="text-2xl block mb-1">🤖</span>
-                        <span class="font-bold">模型/動漫</span>
+                    <button onclick="switchTab('itinerary')" class="bg-white/20 hover:bg-white/30 p-3 rounded-xl text-left transition border border-white/10">
+                        <span class="text-2xl block mb-1">🗓️</span>
+                        <span class="font-bold">5天行程表</span>
                     </button>
                     <button onclick="switchTab('money')" class="bg-white/20 hover:bg-white/30 p-3 rounded-xl text-left transition border border-white/10">
                         <span class="text-2xl block mb-1">💰</span>
@@ -78,7 +83,7 @@
             </div>
 
             <div>
-                <h3 class="font-bold text-xl text-gray-700 mb-3 ml-1">🔗 精選旅遊指南</h3>
+                <h3 class="font-bold text-xl text-gray-700 mb-3 ml-1">🔗 實用連結</h3>
                 <div class="grid grid-cols-1 gap-3" id="links-container"></div>
             </div>
         </div>
@@ -88,9 +93,9 @@
             <div class="absolute top-4 left-0 right-0 z-[1000] px-3">
                 <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 px-1">
                     <button onclick="filterMap('all')" class="map-filter px-5 py-2 bg-white shadow-lg rounded-full text-base border active-filter font-bold text-blue-600 ring-2 ring-blue-500">全部</button>
-                    <button onclick="filterMap('toy')" class="map-filter px-5 py-2 bg-white shadow-lg rounded-full text-base border text-gray-700">🤖 動漫玩具</button>
                     <button onclick="filterMap('food')" class="map-filter px-5 py-2 bg-white shadow-lg rounded-full text-base border text-gray-700">🍜 美食</button>
-                    <button onclick="filterMap('shopping')" class="map-filter px-5 py-2 bg-white shadow-lg rounded-full text-base border text-gray-700">🛍️ 購物</button>
+                    <button onclick="filterMap('toy')" class="map-filter px-5 py-2 bg-white shadow-lg rounded-full text-base border text-gray-700">🐻 動漫/萌物</button>
+                    <button onclick="filterMap('shopping')" class="map-filter px-5 py-2 bg-white shadow-lg rounded-full text-base border text-gray-700">🛍️ 伴手禮</button>
                     <button onclick="filterMap('spot')" class="map-filter px-5 py-2 bg-white shadow-lg rounded-full text-base border text-gray-700">📸 景點</button>
                 </div>
             </div>
@@ -119,17 +124,25 @@
         <div id="view-explore" class="hidden p-5 space-y-4 fade-in pb-24">
             <h2 class="text-2xl font-bold text-gray-800">🔍 區域與分類</h2>
             <div class="relative">
-                <input type="text" id="search-input" placeholder="搜尋 鋼彈、拉麵..." class="w-full p-4 pl-12 rounded-xl border-none shadow-sm bg-white text-lg">
+                <input type="text" id="search-input" placeholder="搜尋 湯咖哩、初音、木刀..." class="w-full p-4 pl-12 rounded-xl border-none shadow-sm bg-white text-lg">
                 <span class="absolute left-4 top-4 text-gray-400 text-xl">🔍</span>
             </div>
             <div class="flex gap-2">
-                <button onclick="filterExplore('toy')" class="flex-1 bg-purple-100 text-purple-900 py-3 rounded-xl font-bold text-lg border border-purple-200">🤖 動漫/模型</button>
-                <button onclick="filterExplore('food')" class="flex-1 bg-orange-100 text-orange-900 py-3 rounded-xl font-bold text-lg border border-orange-200">🍜 必吃美食</button>
+                <button onclick="filterExplore('toy')" class="flex-1 bg-purple-100 text-purple-900 py-3 rounded-xl font-bold text-lg border border-purple-200">🐻 動漫/萌物</button>
+                <button onclick="filterExplore('food')" class="flex-1 bg-orange-100 text-orange-900 py-3 rounded-xl font-bold text-lg border border-orange-200">🍜 特色美食</button>
             </div>
             <div id="explore-list" class="space-y-4 mt-2"></div>
         </div>
 
-        <!-- 4️⃣ 記帳 -->
+        <!-- 4️⃣ 行程 (New Tab) -->
+        <div id="view-itinerary" class="hidden p-5 space-y-6 fade-in pb-24">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">🗓️ 5 天行程攻略</h2>
+            <div id="itinerary-container" class="space-y-6">
+                <!-- JS 動態生成 -->
+            </div>
+        </div>
+
+        <!-- 5️⃣ 記帳 -->
         <div id="view-money" class="hidden p-5 space-y-6 fade-in pb-24">
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
                 <h3 class="font-bold text-gray-500 mb-2">🇯🇵 匯率試算 (0.22)</h3>
@@ -152,7 +165,6 @@
                     📝 新增一筆花費
                 </h3>
                 
-                <!-- Google Sheet URL 設定 -->
                 <div id="sheet-setup-box" class="mb-4 p-3 bg-yellow-50 text-yellow-800 text-sm rounded-lg hidden">
                     <p class="font-bold mb-1">⚠️ 設定連結</p>
                     <input type="text" id="sheet-url-input" placeholder="Apps Script URL" class="w-full p-2 border rounded mb-2">
@@ -189,17 +201,17 @@
             </div>
         </div>
 
-        <!-- 5️⃣ 工具 -->
+        <!-- 6️⃣ 工具 -->
         <div id="view-tools" class="hidden p-5 space-y-6 fade-in pb-24">
             <div class="bg-white p-5 rounded-2xl shadow-sm">
                 <h3 class="font-bold text-gray-700 mb-3">🗣️ 翻譯小幫手</h3>
                 <div class="flex gap-2 mb-3">
-                    <button class="flex-1 py-2 bg-blue-100 text-blue-700 rounded-lg font-bold">中 ➞ 日</button>
-                    <button class="flex-1 py-2 bg-gray-100 text-gray-600 rounded-lg">日 ➞ 中</button>
+                    <button id="btn-cn-jp" onclick="setTransMode('cn_jp')" class="flex-1 py-2 bg-blue-600 text-white rounded-lg font-bold shadow-md transition">中 ➞ 日</button>
+                    <button id="btn-jp-cn" onclick="setTransMode('jp_cn')" class="flex-1 py-2 bg-gray-100 text-gray-600 rounded-lg transition">日 ➞ 中</button>
                 </div>
-                <textarea placeholder="請輸入文字..." class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 h-24 mb-2 text-lg"></textarea>
+                <textarea id="trans-input" placeholder="請輸入中文..." class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 h-24 mb-2 text-lg"></textarea>
                 <div class="flex gap-2">
-                    <button class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-bold">翻譯</button>
+                    <button onclick="alert('模擬翻譯功能：\n請使用 Google 翻譯 App 獲得最佳體驗')" class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-bold shadow hover:bg-blue-700">翻譯</button>
                     <button class="w-14 bg-gray-200 rounded-xl flex items-center justify-center text-2xl">🎤</button>
                     <button class="w-14 bg-gray-200 rounded-xl flex items-center justify-center text-2xl">📷</button>
                 </div>
@@ -245,6 +257,10 @@
             <svg class="w-7 h-7 mb-1" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" fill="currentColor"/></svg>
             <span class="text-xs">探索</span>
         </button>
+        <button onclick="switchTab('itinerary')" class="nav-item flex flex-col items-center p-2 w-full transition">
+            <svg class="w-7 h-7 mb-1" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" fill="currentColor"/></svg>
+            <span class="text-xs">行程</span>
+        </button>
         <button onclick="switchTab('money')" class="nav-item flex flex-col items-center p-2 w-full transition">
             <svg class="w-7 h-7 mb-1" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" fill="currentColor"/></svg>
             <span class="text-xs">記帳</span>
@@ -259,20 +275,98 @@
 
     <script>
         const places = [
+            // --- 既有景點 ---
             { id: 1, name: "大通公園", type: "spot", area: "札幌中心", lat: 43.0611, lng: 141.3564, note: "札幌地標電視塔", icon: "🗼", rating: 4.5 },
             { id: 2, name: "狸小路商店街", type: "shopping", area: "狸小路", lat: 43.0567, lng: 141.3542, note: "藥妝、唐吉訶德、伴手禮", icon: "🛍️", rating: 4.2 },
             { id: 3, name: "二條市場", type: "food", area: "札幌中心", lat: 43.0583, lng: 141.3582, note: "海鮮丼飯早餐首選", icon: "🦀", rating: 4.1 },
             { id: 4, name: "小樽運河", type: "spot", area: "小樽", lat: 43.1976, lng: 141.0028, note: "浪漫夜景必拍", icon: "🛶", rating: 4.4 },
             { id: 26, name: "三井 OUTLET", type: "shopping", area: "北廣島", lat: 42.9698, lng: 141.4627, note: "名牌折扣，好逛好買", icon: "🏬", rating: 4.1 },
-            { id: 101, name: "Animate 札幌店", type: "toy", area: "札幌中心", lat: 43.0605, lng: 141.3535, note: "女性向周邊多，漫畫齊全", icon: "📘", rating: 4.3 },
-            { id: 102, name: "Mandarake 札幌店", type: "toy", area: "狸小路", lat: 43.0565, lng: 141.3525, note: "二手絕版品挖寶聖地 (大通大樓內)", icon: "🏺", rating: 4.0 },
-            { id: 103, name: "駿河屋 札幌店", type: "toy", area: "札幌車站", lat: 43.0675, lng: 141.3510, note: "二手模型公仔價格漂亮", icon: "📦", rating: 3.9 },
-            { id: 104, name: "Pokémon Center Sapporo", type: "toy", area: "札幌車站", lat: 43.0686, lng: 141.3508, note: "大丸百貨 8F，限定寶可夢周邊", icon: "⚡", rating: 4.6 },
-            { id: 105, name: "Yodobashi Camera", type: "toy", area: "札幌車站", lat: 43.0690, lng: 141.3480, note: "3F 玩具模型區極大，鋼彈齊全，免稅", icon: "🤖", rating: 4.5 },
-            { id: 106, name: "Bic Camera 札幌店", type: "toy", area: "札幌車站", lat: 43.0670, lng: 141.3530, note: "電器與玩具模型，免稅方便", icon: "📷", rating: 4.2 },
-            { id: 107, name: "VOLKS 札幌店", type: "toy", area: "札幌中心", lat: 43.0600, lng: 141.3530, note: "IKEUCHI GATE 內，專業模型工具與人偶", icon: "🛠️", rating: 4.4 },
-            { id: 201, name: "札幌 PARCO", type: "shopping", area: "札幌中心", lat: 43.0595, lng: 141.3530, note: "年輕潮流品牌，Jump Shop 在這", icon: "👗", rating: 4.1 },
+            
+            // --- 美食 ---
+            { id: 301, name: "LeTAO 本店", type: "food", area: "小樽", lat: 43.1912, lng: 141.0065, note: "必吃雙層乳酪蛋糕 (Double Fromage)", icon: "🍰", rating: 4.8 },
+            { id: 302, name: "北菓樓 小樽本館", type: "food", area: "小樽", lat: 43.1930, lng: 141.0082, note: "「夢不思議」大泡芙、妖精之森年輪蛋糕", icon: "🍦", rating: 4.6 },
+            { id: 303, name: "若雞時代 Naruto", type: "food", area: "小樽", lat: 43.1956, lng: 140.9942, note: "小樽名物：超大炸半雞定食", icon: "🍗", rating: 4.4 },
+            { id: 304, name: "Suage+ 湯咖哩", type: "food", area: "札幌中心", lat: 43.0555, lng: 141.3533, note: "北海道靈魂美食，串燒知床雞", icon: "🍛", rating: 4.5 },
+            { id: 305, name: "札幌啤酒園", type: "food", area: "札幌東區", lat: 43.0712, lng: 141.3695, note: "成吉思汗烤羊肉吃到飽，啤酒好喝", icon: "🥩", rating: 4.3 },
+            { id: 306, name: "六花亭 札幌本店", type: "shopping", area: "札幌車站", lat: 43.0635, lng: 141.3498, note: "必買：蘭姆葡萄奶油夾心餅乾", icon: "🍪", rating: 4.7 },
+            { id: 307, name: "Wakasaimo 本舖", type: "food", area: "洞爺湖", lat: 42.5562, lng: 140.8190, note: "洞爺名產：假裝是地瓜的豆沙甜點", icon: "🍠", rating: 4.0 },
+
+            // --- 動漫 ---
+            { id: 401, name: "越後屋 (洞爺湖木刀)", type: "toy", area: "洞爺湖", lat: 42.5663, lng: 140.8260, note: "《銀魂》坂田銀時愛用木刀，可刻字", icon: "🗡️", rating: 4.5 },
+            { id: 402, name: "雪未來 Sky Town", type: "toy", area: "新千歲機場", lat: 42.7875, lng: 141.6814, note: "初音迷聖地，北海道限定 Snow Miku", icon: "❄️", rating: 4.7 },
+            { id: 403, name: "小樽音樂盒堂", type: "spot", area: "小樽", lat: 43.1906, lng: 141.0076, note: "門口蒸氣鐘是地標，也是《黃金神威》場景", icon: "🎼", rating: 4.6 },
+            { id: 404, name: "哈密瓜熊 (夕張)", type: "toy", area: "其他", lat: 43.0560, lng: 141.9700, note: "長相兇殘的在地吉祥物", icon: "🐻", rating: 3.8 },
+            { id: 104, name: "Pokémon Center Sapporo", type: "toy", area: "札幌車站", lat: 43.0686, lng: 141.3508, note: "尋找北海道大使「阿羅拉六尾」", icon: "⚡", rating: 4.6 },
+            { id: 101, name: "Animate 札幌店", type: "toy", area: "札幌中心", lat: 43.0605, lng: 141.3535, note: "動漫周邊，女性向多", icon: "📘", rating: 4.3 },
+            { id: 102, name: "Mandarake 札幌店", type: "toy", area: "狸小路", lat: 43.0565, lng: 141.3525, note: "二手絕版品挖寶", icon: "🏺", rating: 4.0 },
+            { id: 103, name: "駿河屋 札幌店", type: "toy", area: "札幌車站", lat: 43.0675, lng: 141.3510, note: "二手模型公仔", icon: "📦", rating: 3.9 },
+            { id: 105, name: "Yodobashi Camera", type: "toy", area: "札幌車站", lat: 43.0690, lng: 141.3480, note: "3F 模型區極大，鋼彈齊全", icon: "🤖", rating: 4.5 },
+            
+            // --- 其他 ---
+            { id: 201, name: "札幌 PARCO", type: "shopping", area: "札幌中心", lat: 43.0595, lng: 141.3530, note: "Jump Shop 在這 (海賊王/排球少年)", icon: "👗", rating: 4.1 },
             { id: 202, name: "Stellar Place", type: "shopping", area: "札幌車站", lat: 43.0685, lng: 141.3505, note: "與車站共構，超大購物中心", icon: "🏬", rating: 4.3 },
+        ];
+
+        // 5天詳細行程資料
+        const fullItinerary = [
+            {
+                day: "Day 1",
+                title: "道南自然風光",
+                desc: "函館機場抵達 ➔ 體驗異國風情與自然美景",
+                hotel: { name: "登別萬世閣 (Noboribetsu Manseikaku)", url: "https://maps.app.goo.gl/uK9EwJJVUyrXnpr28" },
+                spots: [
+                    { name: "百年女子修道院", url: "https://www.google.com/maps/search/?api=1&query=Trappistine+Monastery", type: "snap", note: "必吃：門口販賣部的霜淇淋 (號稱北海道最濃)。<br>必拍：歐風庭園與紅磚建築。" },
+                    { name: "大沼國定公園", url: "https://www.google.com/maps/search/?api=1&query=Onuma+Quasi-National+Park", type: "snap", note: "必吃：沼之家 (沼の家) 的醬油/紅豆糰子。<br>必拍：駒之岳倒映在湖面的景色。" },
+                    { name: "洞爺湖展望台", url: "https://www.google.com/maps/search/?api=1&query=Lake+Toya+Observatory", type: "snap", note: "必拍：眺望洞爺湖全景與中島。<br>必吃：Wakasaimo (わかさいも) 甜點。" },
+                    { name: "登別溫泉 Hotel", url: "https://maps.app.goo.gl/uK9EwJJVUyrXnpr28", type: "eat", note: "必吃：飯店自助餐螃蟹吃到飽。<br>必拍：地獄谷煙霧繚繞的景象。" }
+                ]
+            },
+            {
+                day: "Day 2",
+                title: "小樽浪漫漫遊",
+                desc: "漫步運河畔 ➔ 甜點與玻璃工藝之旅",
+                hotel: { name: "待確認飯店 (點擊搜尋)", url: "https://www.google.com/maps/search/?api=1&query=Sapporo+Hotel" },
+                spots: [
+                    { name: "小樽運河", url: "https://www.google.com/maps/search/?api=1&query=Otaru+Canal", type: "snap", note: "必拍：淺草橋上拍攝倉庫群倒影，晚上點燈更美。" },
+                    { name: "北一硝子館", url: "https://www.google.com/maps/search/?api=1&query=Kitaichi+Glass", type: "buy", note: "必買：精緻的玻璃杯、煤油燈。<br>必拍：三號館內的煤油燈咖啡廳。" },
+                    { name: "小樽音樂盒堂", url: "https://www.google.com/maps/search/?api=1&query=Otaru+Music+Box+Museum", type: "buy", note: "必買：天使造型音樂盒。<br>必拍：門口的世界最大蒸氣鐘 (整點報時)。" },
+                    { name: "LeTAO / 北菓樓", url: "https://www.google.com/maps/search/?api=1&query=LeTAO+Main+Store", type: "eat", note: "必吃：LeTAO 雙層乳酪蛋糕、北菓樓「夢不思議」泡芙、六花亭泡芙。" }
+                ]
+            },
+            {
+                day: "Day 3",
+                title: "札幌名勝巡禮",
+                desc: "市區觀光 ➔ 參拜神宮與巧克力工廠",
+                hotel: { name: "待確認飯店 (點擊搜尋)", url: "https://www.google.com/maps/search/?api=1&query=Sapporo+Hotel" },
+                spots: [
+                    { name: "北海道神宮", url: "https://www.google.com/maps/search/?api=1&query=Hokkaido+Jingu", type: "snap", note: "必買：拉拉熊繪馬、神宮限定的「判官餅」(現烤)。<br>必拍：莊嚴的鳥居與參道。" },
+                    { name: "白色戀人公園", url: "https://www.google.com/maps/search/?api=1&query=Shiroi+Koibito+Park", type: "snap", note: "必買：白色戀人巧克力、年輪蛋糕。<br>必拍：歐風玫瑰花園與整點玩偶遊行。" },
+                    { name: "札幌工廠", url: "https://www.google.com/maps/search/?api=1&query=Sapporo+Factory", type: "buy", note: "必拍：巨大的紅磚建築與溫室中庭。<br>必逛：戶外用品店 (Mont-bell 等)。" },
+                    { name: "狸小路商店街", url: "https://www.google.com/maps/search/?api=1&query=Tanukikoji+Shopping+Street", type: "buy", note: "必買：藥妝 (大國/松本清)、唐吉訶德伴手禮。<br>必吃：湯咖哩 (Suage+ 或 GARAKU)。" }
+                ]
+            },
+            {
+                day: "Day 4",
+                title: "購物與百萬夜景",
+                desc: "Outlet 血拼 ➔ 移動至函館賞夜景",
+                hotel: { name: "待確認飯店 (點擊搜尋)", url: "https://www.google.com/maps/search/?api=1&query=Hakodate+Hotel" },
+                spots: [
+                    { name: "三井 OUTLET", url: "https://www.google.com/maps/search/?api=1&query=Mitsui+Outlet+Park+Sapporo+Kitahiroshima", type: "buy", note: "必買：運動品牌 (Nike/Adidas)、日系服飾、LC鍋具。<br>必吃：美食街的豚丼。" },
+                    { name: "金森紅磚倉庫", url: "https://www.google.com/maps/search/?api=1&query=Kanemori+Red+Brick+Warehouse", type: "snap", note: "必拍：港邊紅磚倉庫群。<br>必吃：Snaffle's 起司蛋糕 (Catchcakes)。" },
+                    { name: "幸運小丑漢堡", url: "https://www.google.com/maps/search/?api=1&query=Lucky+Pierrot", type: "eat", note: "必吃：中華雞腿漢堡 (全日本最好吃漢堡)，只有函館有！" },
+                    { name: "函館山夜景", url: "https://www.google.com/maps/search/?api=1&query=Mount+Hakodate", type: "snap", note: "必拍：世界三大夜景之一，特殊的雙C海灣地形。" }
+                ]
+            },
+            {
+                day: "Day 5",
+                title: "海鮮美食饗宴",
+                desc: "函館朝市體驗 ➔ 滿載而歸",
+                hotel: null, // Day 5 返家
+                spots: [
+                    { name: "函館傳統朝市", url: "https://www.google.com/maps/search/?api=1&query=Hakodate+Morning+Market", type: "eat", note: "必吃：現釣烏賊刺身 (在那邊釣那邊吃)、海鮮丼飯。<br>必買：干貝糖、昆布。" },
+                    { name: "函館/千歲機場", url: "https://www.google.com/maps/search/?api=1&query=New+Chitose+Airport", type: "buy", note: "必買：薯條三兄弟、Royce巧克力、北見薄荷油。<br>最後補貨機會！" }
+                ]
+            }
         ];
 
         const webLinks = [
@@ -297,9 +391,7 @@
         let markers = [];
         let expenseList = JSON.parse(localStorage.getItem('hokkaido_expenses')) || [];
         
-        // 優先使用您提供的正確 URL
-        const DEFAULT_URL = "https://script.google.com/macros/s/AKfycbwmHJUPg8d5kifnsC3rn-coFyzJOso0ihMZgrNUf8IGcbg6KYqMHCAC-Or8r35Xssct/exec";
-        // 只有當使用者「手動」更新過，才使用 localStorage，否則強制使用正確的 DEFAULT_URL
+        const DEFAULT_URL = "https://script.google.com/macros/s/AKfycbyGdnxRVEY4_lpRozTYUqmLKP8634VmE_LRpSKsMoTm4H4ATD8b6Bs30PLrpQF4tbE/exec";
         let sheetUrl = localStorage.getItem('hokkaido_sheet_url_custom') === 'true' 
             ? (localStorage.getItem('hokkaido_sheet_url') || DEFAULT_URL) 
             : DEFAULT_URL;
@@ -309,11 +401,10 @@
             renderKeywords();
             renderExplore(places);
             renderExpenseList();
+            renderItineraryDetails(); // 新增渲染行程
             initMap();
             
             document.getElementById('expense-date').valueAsDate = new Date();
-            
-            // 將目前的 URL 填入設定框，方便使用者查看
             document.getElementById('sheet-url-input').value = sheetUrl;
 
             document.getElementById('search-input').addEventListener('input', (e) => {
@@ -328,7 +419,7 @@
         });
 
         function switchTab(tabName, filterType = null) {
-            ['home', 'map', 'explore', 'money', 'tools'].forEach(t => {
+            ['home', 'map', 'explore', 'money', 'tools', 'itinerary'].forEach(t => {
                 document.getElementById(`view-${t}`).classList.add('hidden');
                 document.getElementById(`view-${t}`).classList.remove('flex');
             });
@@ -338,8 +429,15 @@
             if (tabName === 'map') target.classList.add('flex');
             
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            const navMap = {'home':0, 'map':1, 'explore':2, 'money':3, 'tools':4};
-            document.querySelectorAll('.nav-item')[navMap[tabName]].classList.add('active');
+            
+            // Update active state based on tab name
+            const navItems = document.querySelectorAll('.nav-item');
+            if(tabName === 'home') navItems[0].classList.add('active');
+            else if(tabName === 'map') navItems[1].classList.add('active');
+            else if(tabName === 'explore') navItems[2].classList.add('active');
+            else if(tabName === 'itinerary') navItems[3].classList.add('active');
+            else if(tabName === 'money') navItems[4].classList.add('active');
+            else if(tabName === 'tools') navItems[5].classList.add('active');
 
             if (tabName === 'map') {
                 setTimeout(() => { 
@@ -349,6 +447,78 @@
             }
             if (tabName === 'explore' && filterType) {
                 filterExplore(filterType);
+            }
+        }
+
+        // --- 新增：渲染詳細行程 ---
+        function renderItineraryDetails() {
+            const container = document.getElementById('itinerary-container');
+            container.innerHTML = fullItinerary.map((day, index) => {
+                let hotelHtml = '';
+                if (day.hotel) {
+                    hotelHtml = `
+                        <div class="mt-4 pt-3 border-t border-gray-100">
+                            <p class="text-xs text-gray-500 font-bold mb-1">🌙 今晚住宿</p>
+                            <a href="${day.hotel.url}" target="_blank" class="flex items-center gap-2 text-indigo-600 font-bold hover:underline">
+                                <span>🏨</span> ${day.hotel.name} <span>➜</span>
+                            </a>
+                        </div>
+                    `;
+                }
+
+                return `
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+                    <div class="bg-blue-50 p-4 border-b border-blue-100">
+                        <h3 class="font-bold text-xl text-blue-800">${day.day}：${day.title}</h3>
+                        <p class="text-sm text-gray-600 mt-1">${day.desc}</p>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        ${day.spots.map(spot => {
+                            let tagClass = "";
+                            let tagText = "";
+                            if(spot.type === 'eat') { tagClass = "tag-eat"; tagText = "必吃"; }
+                            else if(spot.type === 'buy') { tagClass = "tag-buy"; tagText = "必買"; }
+                            else { tagClass = "tag-snap"; tagText = "必拍"; }
+                            
+                            return `
+                                <div class="flex gap-3">
+                                    <div class="flex-none pt-1">
+                                        <span class="text-xs font-bold px-2 py-1 rounded border ${tagClass}">${tagText}</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <a href="${spot.url}" target="_blank" class="font-bold text-gray-800 text-lg hover:text-blue-600 transition flex items-center gap-1">
+                                            ${spot.name} <span class="text-gray-400 text-sm">↗</span>
+                                        </a>
+                                        <p class="text-sm text-gray-600 mt-1 leading-relaxed">${spot.note}</p>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                        ${hotelHtml}
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        // --- 新增：翻譯模式切換 ---
+        function setTransMode(mode) {
+            const input = document.getElementById('trans-input');
+            const btnCn = document.getElementById('btn-cn-jp');
+            const btnJp = document.getElementById('btn-jp-cn');
+
+            if(mode === 'cn_jp') {
+                input.placeholder = "請輸入中文...";
+                btnCn.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+                btnCn.classList.remove('bg-gray-100', 'text-gray-600');
+                btnJp.classList.add('bg-gray-100', 'text-gray-600');
+                btnJp.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
+            } else {
+                input.placeholder = "請輸入日文...";
+                btnJp.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+                btnJp.classList.remove('bg-gray-100', 'text-gray-600');
+                btnCn.classList.add('bg-gray-100', 'text-gray-600');
+                btnCn.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
             }
         }
 
